@@ -114,7 +114,6 @@ const SITE_CONFIG = {
   bibliographic records of the first 100 families returned by the EPO.
 - **Legal status** is not available in aggregate form from the EPO and is shown only when the source provides it.
 - If the proxy does not respond, the site shows the last data received in the browser, with a retry button.
-- Western Sahara is included in Morocco on the maps and in the counts.
 - Patents are published about 18 months after filing, so the two most recent years are incomplete.
 
 ## Credits
