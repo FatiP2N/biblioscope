@@ -5,7 +5,8 @@
   },
   "colors": {
     "main": "#1C6E8C",
-    "second": "#02523E",
+    "second": "#B4741C",
+    "third": "#2F7D5B",
     "background": "#F2F5F6",
     "panels": "#FFFFFF",
     "text": "#13222B"
