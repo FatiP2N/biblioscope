@@ -14,7 +14,7 @@
 /* Layout: sticky query bar (tabs), indicator strip, then a grid of panels (2 columns, 1 on mobile). */
 :root{
   --paper:#F2F5F6; --surface:#FFFFFF; --ink:#13222B; --muted:#5B6C75; --line:#D6DFE3;
-  --accent:#1C6E8C; --accent-2:#0E4A61; --accent-soft:#D5E8EF; --ochre:#B4741C; --ochre-soft:#F3E3C8;
+  --accent:#1C6E8C; --accent-2:#0E4A61; --accent-soft:#D5E8EF; --ochre:#B4741C; --ochre-soft:#F3E3C8; --wb:#2F7D5B; --wb-soft:#D5EADF;
   --good:#2E7D55; --bad:#B23A48;
   --f-display:"Spectral", Georgia, "Times New Roman", serif;
   --f-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -23,11 +23,11 @@
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --paper:#0D161B; --surface:#14212A; --ink:#E2EBEE; --muted:#93A6AF; --line:#24363F;
-  --accent:#5CB2D2; --accent-2:#9AD3E8; --accent-soft:#18394A; --ochre:#E2A84C; --ochre-soft:#3F2F17;
+  --accent:#5CB2D2; --accent-2:#9AD3E8; --accent-soft:#18394A; --ochre:#E2A84C; --ochre-soft:#3F2F17; --wb:#6CC196; --wb-soft:#1B3A2C;
   --good:#5FBF8C; --bad:#E07A86; color-scheme:dark; } }
 :root[data-theme="dark"]{
   --paper:#0D161B; --surface:#14212A; --ink:#E2EBEE; --muted:#93A6AF; --line:#24363F;
-  --accent:#5CB2D2; --accent-2:#9AD3E8; --accent-soft:#18394A; --ochre:#E2A84C; --ochre-soft:#3F2F17;
+  --accent:#5CB2D2; --accent-2:#9AD3E8; --accent-soft:#18394A; --ochre:#E2A84C; --ochre-soft:#3F2F17; --wb:#6CC196; --wb-soft:#1B3A2C;
   --good:#5FBF8C; --bad:#E07A86; color-scheme:dark; }
 
 *{box-sizing:border-box}
@@ -239,6 +239,10 @@ footer p{max-width:90ch;margin:.3em 0}
 .kpis.k5{grid-template-columns:repeat(5,minmax(0,1fr))}
 .kpis.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media (max-width:640px){.kpis.k4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+#wbView .kpi .v{color:var(--wb)}
+#tWRank tr.sel td{background:var(--wb-soft)}
+.ph .chk{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--muted);padding:0;cursor:pointer}
+.wb-chart{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin:8px 0 18px}.wb-chart .wbc-src{margin:6px 0 0}.wb-chart .na{padding:24px 0}
 .w-about{font-size:13.5px;line-height:1.55;color:var(--ink)}.w-about p{margin:0 0 8px;max-width:90ch}.w-about .mono{font-size:12px}
 @media (max-width:900px){.kpis.k5{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:480px){.kpis.k5{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -638,6 +642,7 @@ footer p{max-width:90ch;margin:.3em 0}
     <div class="grid" id="wgrid">
       <section id="wTrendPanel" class="panel wide">
         <div class="ph"><h2 data-i18n="wp.trend"></h2><span class="src" data-i18n="w.src"></span><span class="sp"></span>
+          <label class="chk"><input type="checkbox" id="wWorld" checked> <span data-i18n="w.showWorld"></span></label>
           <button class="ghost" type="button" id="wDlSeries" data-i18n="wbtn.csv"></button></div>
         <div class="chart" id="cWTrend" role="img" data-i18n-aria="wp.trend"></div>
         <p class="note" id="wUnitNote"></p>
@@ -801,7 +806,7 @@ fr: {
   "off.EP": "OEB (EP)", "off.WO": "OMPI (PCT)", "off.EA": "Eurasie (EA)", "off.AP": "ARIPO (AP)", "off.OA": "OAPI (OA)", "off.GC": "Golfe (GC)",
   "ex.inst": "Exemple : institution {x}", "ex.journal": "Exemple : revue {x}", "ex.title": "Exemple de publication n° {n} (titre fictif)",
   "ex.author": "Auteur {x}.", "ex.journal1": "Revue d'exemple", "ex.applicant": "Exemple : déposant {x}", "ex.patent": "Exemple de brevet n° {n} (titre fictif)",
-  "tab.about": "À propos", "tab.wb": "Banque mondiale", "wf.indicator": "Indicateur", "wf.countries": "Pays à comparer", "wf.code": "Code de l'indicateur", "wf.years": "Période", "wf.other": "Autre indicateur (code de la Banque mondiale)…",
+  "tab.about": "À propos", "tab.wb": "Banque mondiale", "wf.indicator": "Indicateur", "wf.countries": "Pays à comparer", "wf.code": "Code de l'indicateur", "wf.years": "Période", "w.showWorld": "Afficher la valeur mondiale", "wbc.perMillion": "par million d'habitants (calculé avec la population de la Banque mondiale)", "wf.other": "Autre indicateur (code de la Banque mondiale)…",
   "ph.wcode": "code, ex. SP.POP.TOTL", "wg.rd": "Recherche et innovation", "wg.eco": "Économie", "wg.soc": "Éducation et société", "wg.env": "Énergie, eau et environnement",
   "wk.latest": "Valeur la plus récente", "wk.rank": "Rang mondial", "wk.change": "Évolution sur la période", "wk.world": "Valeur mondiale", "wk.rankS": "{c} · sur {n} pays", "wk.noCountry": "choisissez un pays",
   "wp.trend": "Évolution par pays", "wp.map": "Carte mondiale (dernière valeur disponible)", "wp.about": "À propos de cet indicateur", "wth.value": "Valeur", "wth.year": "Année",
@@ -985,7 +990,7 @@ en: {
   "off.EP": "EPO (EP)", "off.WO": "WIPO (PCT)", "off.EA": "Eurasia (EA)", "off.AP": "ARIPO (AP)", "off.OA": "OAPI (OA)", "off.GC": "Gulf (GC)",
   "ex.inst": "Example: institution {x}", "ex.journal": "Example: journal {x}", "ex.title": "Example publication no. {n} (fictitious title)",
   "ex.author": "Author {x}.", "ex.journal1": "Example journal", "ex.applicant": "Example: applicant {x}", "ex.patent": "Example patent no. {n} (fictitious title)",
-  "tab.about": "About", "tab.wb": "World Bank", "wf.indicator": "Indicator", "wf.countries": "Countries to compare", "wf.code": "Indicator code", "wf.years": "Period", "wf.other": "Other indicator (World Bank code)…",
+  "tab.about": "About", "tab.wb": "World Bank", "wf.indicator": "Indicator", "wf.countries": "Countries to compare", "wf.code": "Indicator code", "wf.years": "Period", "w.showWorld": "Show the world value", "wbc.perMillion": "per million people (computed with World Bank population)", "wf.other": "Other indicator (World Bank code)…",
   "ph.wcode": "code, e.g. SP.POP.TOTL", "wg.rd": "Research and innovation", "wg.eco": "Economy", "wg.soc": "Education and society", "wg.env": "Energy, water and environment",
   "wk.latest": "Latest value", "wk.rank": "World rank", "wk.change": "Change over the period", "wk.world": "World value", "wk.rankS": "{c} · out of {n} countries", "wk.noCountry": "choose a country",
   "wp.trend": "Trend by country", "wp.map": "World map (latest available value)", "wp.about": "About this indicator", "wth.value": "Value", "wth.year": "Year",
@@ -1174,7 +1179,7 @@ function fillDatalists() {
 /* ---------- colors ---------- */
 const tok = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const T = () => ({ ink: tok("--ink"), muted: tok("--muted"), line: tok("--line"), surface: tok("--surface"), paper: tok("--paper"),
-  accent: tok("--accent"), accent2: tok("--accent-2"), soft: tok("--accent-soft"), ochre: tok("--ochre"), ochreSoft: tok("--ochre-soft"),
+  accent: tok("--accent"), accent2: tok("--accent-2"), wb: tok("--wb"), wbSoft: tok("--wb-soft"), soft: tok("--accent-soft"), ochre: tok("--ochre"), ochreSoft: tok("--ochre-soft"),
   good: tok("--good"), mono: "IBM Plex Mono, ui-monospace, monospace", body: "IBM Plex Sans, system-ui, sans-serif" });
 
 /* ---------- state ---------- */
@@ -2699,6 +2704,8 @@ async function wbFetch(path, params) {
   throw err;
 }
 const COLON = () => LANG === "fr" ? " : " : ": ";
+/* line colors: the third site color (World Bank) first, then the others */
+const WB_PAL = th => [th.wb, th.accent, th.ochre, th.accent2, "#9b5de5", "#e07a5f", "#3d8b8b", "#b08968"];
 const fmtV = v => {
   if (v == null || isNaN(v)) return "—";
   const a = Math.abs(v);
@@ -2770,10 +2777,10 @@ function renderWb() {
   $("wK4").textContent = d.world ? fmtV(d.world[0]) : "—"; $("wK4s").textContent = d.world ? t("w.world") + " · " + d.world[1] : "";
   // Trend
   const ys = []; for (let y = s.y1; y <= s.y2; y++) ys.push(y);
-  const keys = [...s.countries.filter(c => d.byC.has(c)), ...(d.byC.has("WLD") ? ["WLD"] : [])];
+  const keys = [...s.countries.filter(c => d.byC.has(c)), ...(d.byC.has("WLD") && $("wWorld").checked ? ["WLD"] : [])];
   if (!keys.length) noChart("cWTrend", t("na.wtrend"));
   else {
-    const pal = [th.accent, th.ochre, th.accent2, th.good, "#9b5de5", "#e07a5f", "#3d8b8b", "#b08968"];
+    const pal = WB_PAL(th);
     let first = ys.findIndex(y => keys.some(k => d.byC.get(k).has(y))); if (first < 0) first = 0;
     let last = ys.length - 1; while (last > first && !keys.some(k => d.byC.get(k).has(ys[last]))) last--;
     const yv = ys.slice(first, last + 1);
@@ -2792,7 +2799,7 @@ function renderWb() {
   $("wUnitNote").textContent = d.name + (d.updated ? " · " + t("w.updated") + COLON() + d.updated : "");
   // Map + ranking
   const sel = new Set(s.countries), rk = d.ranking, max = rk.length ? Math.max(...rk.map(r => Math.abs(r[1]))) : 1;
-  $("tWRank").tBodies[0].innerHTML = rk.length ? rk.map(([c, v, y], i) => `<tr data-code="${c}" class="${sel.has(c) ? "sel" : ""}"><td class="rank">${i + 1}</td><td>${esc(cname(c))}<div class="bar"><i style="width:${(Math.abs(v) / (max || 1) * 100).toFixed(1)}%;background:var(--accent)"></i></div></td><td class="n">${fmtV(v)}</td><td class="n">${y}</td></tr>`).join("")
+  $("tWRank").tBodies[0].innerHTML = rk.length ? rk.map(([c, v, y], i) => `<tr data-code="${c}" class="${sel.has(c) ? "sel" : ""}"><td class="rank">${i + 1}</td><td>${esc(cname(c))}<div class="bar"><i style="width:${(Math.abs(v) / (max || 1) * 100).toFixed(1)}%;background:var(--wb)"></i></div></td><td class="n">${fmtV(v)}</td><td class="n">${y}</td></tr>`).join("")
     : `<tr><td colspan="4" class="note">${esc(t("na.wmap"))}</td></tr>`;
   if (!wRankBound) { wRankBound = true; $("tWRank").tBodies[0].addEventListener("click", e => { const tr = e.target.closest("tr[data-code]"); if (tr) wToggle(tr.dataset.code); }); }
   const mn = mapName();
@@ -2820,7 +2827,7 @@ function renderWb() {
         } },
         visualMap: { min: Math.min(...tv), max: Math.max(...tv), left: 0, bottom: 0, orient: "horizontal", itemWidth: 10, itemHeight: 120, calculable: false,
           text: [fmtV(useLog ? Math.pow(10, Math.max(...tv)) : Math.max(...tv)), fmtV(useLog ? Math.pow(10, Math.min(...tv)) : Math.min(...tv))],
-          textStyle: { color: th.muted, fontFamily: th.mono, fontSize: 11 }, inRange: { color: [th.soft, th.accent] }, outOfRange: { color: th.line } },
+          textStyle: { color: th.muted, fontFamily: th.mono, fontSize: 11 }, inRange: { color: [th.wbSoft, th.wb] }, outOfRange: { color: th.line } },
         series: [{ type: "map", map: mn, roam: true, scaleLimit: { min: 1, max: 8 }, top: 10, bottom: 30,
           itemStyle: { areaColor: th.line, borderColor: th.surface, borderWidth: 0.6 },
           emphasis: { label: { show: false }, itemStyle: { areaColor: th.ochre } }, select: { disabled: true }, data }]
@@ -2860,6 +2867,8 @@ $("wDlRank").addEventListener("click", () => {
   saveCSV("worldbank_" + d.s.code + "_latest.csv", csv([["rank", "country_code", "country", "value", "year", "indicator"], ...d.ranking.map(([c, v, y], i) => [i + 1, c, cname(c), v, y, d.name])]));
 });
 $("wform").addEventListener("submit", e => { e.preventDefault(); runWb(); });
+try { $("wWorld").checked = store.get("wworld", "1") !== "0"; } catch {}
+$("wWorld").addEventListener("change", () => { store.set("wworld", $("wWorld").checked ? "1" : "0"); if (WDATA) renderWb(); });
 $("tabWb").addEventListener("click", () => setMode("wb"));
 
 /* ---------- tabs ---------- */
@@ -2947,10 +2956,68 @@ async function renderFileInto(el, file, stillWanted) {
       sc.textContent = old.textContent; old.replaceWith(sc);
     });
     el.querySelectorAll("a[href^='http']").forEach(a => { a.target = "_blank"; a.rel = "noopener"; });
+    renderWbBlocks(el, stillWanted);
   } catch (e) {
     el.innerHTML = `<div class="banner err">${esc(t("custom.err", { file, msg: e.message }))}</div>`;
   }
 }
+/* World Bank charts inside custom pages, drawn by the site (no iframe, so no "429 too many requests"):
+   <div class="wb-chart" data-indicator="GB.XPD.RSDV.GD.ZS" data-countries="MA,CA,FR,US" data-from="2000" data-per="million"></div>
+   data-countries, data-from and data-per are optional; data-per="million" divides by population (per million people). */
+let WBC = [];
+async function renderWbBlocks(root, stillWanted) {
+  WBC.forEach(c => { try { c.dispose(); } catch {} }); WBC = [];
+  const blocks = [...root.querySelectorAll(".wb-chart[data-indicator]")];
+  for (const el of blocks) {
+    if (stillWanted && !stillWanted()) return;
+    const code = el.dataset.indicator.trim().toUpperCase();
+    const ctry = (el.dataset.countries || "MA,CA,FR,US").split(/[,;\s]+/).map(x => x.trim().toUpperCase()).filter(x => /^[A-Z]{2}$/.test(x));
+    const from = Math.max(1960, parseInt(el.dataset.from, 10) || 2000), per = el.dataset.per === "million";
+    el.innerHTML = `<div class="wbc-chart"><p class="note">${esc(t("ld.loading"))}</p></div><p class="note wbc-src"></p>`;
+    try {
+      const q = [...ctry, "WLD"].join(";"), params = { date: from + ":" + CUR_YEAR, per_page: "20000" };
+      const [ser, pop] = await Promise.all([
+        wbFetch("/country/" + q + "/indicator/" + encodeURIComponent(code), params),
+        per ? wbFetch("/country/" + q + "/indicator/SP.POP.TOTL", params) : Promise.resolve(null)
+      ]);
+      if (stillWanted && !stillWanted()) return;
+      const key = r => (r.countryiso3code === "WLD" || (r.country && r.country.id === "1W")) ? "WLD" : r.country && r.country.id;
+      const P = new Map();
+      if (pop) (pop[1] || []).forEach(r => { if (r.value) P.set(key(r) + r.date, Number(r.value)); });
+      const byC = new Map(); let name = "";
+      ((ser && ser[1]) || []).forEach(r => {
+        if (r.value == null) return; const k = key(r); if (!k) return;
+        if (!name && r.indicator) name = r.indicator.value;
+        let v = Number(r.value);
+        if (per) { const pp = P.get(k + r.date); if (!pp) return; v = v / pp * 1e6; }
+        if (!byC.has(k)) byC.set(k, new Map()); byC.get(k).set(Number(r.date), v);
+      });
+      const noWorld = /^(no|non|false|0)$/i.test(el.dataset.world || "");
+      const keys = [...ctry.filter(c => byC.has(c)), ...(byC.has("WLD") && !noWorld ? ["WLD"] : [])];
+      const box = el.querySelector(".wbc-chart");
+      el.querySelector(".wbc-src").innerHTML = `${esc(t("w.src"))} · <a href="https://data.worldbank.org/indicator/${encodeURIComponent(code)}" target="_blank" rel="noopener">${esc(name || code)}</a>${per ? " · " + esc(t("wbc.perMillion")) : ""}`;
+      if (!keys.length || !window.echarts) { box.innerHTML = `<div class="na">${esc(t("na.wtrend"))}</div>`; continue; }
+      const ys = [...new Set(keys.flatMap(k => [...byC.get(k).keys()]))].sort((a, b) => a - b);
+      const yv = []; for (let y = ys[0]; y <= ys[ys.length - 1]; y++) yv.push(y);
+      box.innerHTML = ""; box.style.height = "320px";
+      const th = T(), ax = axisCommon(th), pal = WB_PAL(th);
+      const c = echarts.init(box, null, { renderer: "canvas" }); WBC.push(c);
+      c.setOption({
+        animationDuration: 500, color: pal, grid: { left: 8, right: 16, top: 36, bottom: 8, containLabel: true },
+        legend: { top: 0, left: 0, textStyle: { color: th.ink, fontSize: 12 }, icon: "roundRect", itemWidth: 12, itemHeight: 4 },
+        tooltip: { trigger: "axis", ...tip(th), valueFormatter: v => fmtV(v) },
+        xAxis: { type: "category", data: yv, boundaryGap: false, ...ax, splitLine: { show: false } },
+        yAxis: { type: "value", scale: true, ...ax, axisLine: { show: false }, axisLabel: { ...ax.axisLabel, formatter: v => fmtV(v) } },
+        series: keys.map((k, i) => ({ name: k === "WLD" ? t("w.world") : cname(k), type: "line", connectNulls: true, symbolSize: 5, showSymbol: yv.length < 30,
+          data: yv.map(y => byC.get(k).has(y) ? byC.get(k).get(y) : null),
+          ...(k === "WLD" ? { lineStyle: { type: "dashed", width: 1.5, color: th.muted }, itemStyle: { color: th.muted } } : { lineStyle: { width: 2.2 }, itemStyle: { color: pal[i % pal.length] } }) }))
+      });
+    } catch (e) {
+      el.querySelector(".wbc-chart").innerHTML = `<div class="na">${esc(e.bad ? t("wst.badCode", { code }) : t("wst.err", { msg: e.message }))}</div>`;
+    }
+  }
+}
+window.addEventListener("resize", () => WBC.forEach(c => c.resize()));
 function renderCustom(id) {
   const tab = CUSTOM.find(x => x.id === id); if (!tab) return;
   renderFileInto($("customBody"), pickLang(tab.file), () => MODE === "custom:" + id);
@@ -3002,8 +3069,8 @@ const drop = $("drop");
 drop.addEventListener("drop", e => addFiles([...e.dataTransfer.files]));
 
 /* ---------- site colors (site.json "colors" and "darkColors") ---------- */
-const COLOR_KEYS = ["main", "second", "background", "panels", "text"];
-const COLOR_DEFAULT = { main: "#1C6E8C", second: "#B4741C", background: "#F2F5F6", panels: "#FFFFFF", text: "#13222B" };
+const COLOR_KEYS = ["main", "second", "third", "background", "panels", "text"];
+const COLOR_DEFAULT = { main: "#1C6E8C", second: "#B4741C", third: "#2F7D5B", background: "#F2F5F6", panels: "#FFFFFF", text: "#13222B" };
 const DARK_DEFAULT = { background: "#0D161B", panels: "#14212A", text: "#E2EBEE" };
 const isHex = v => typeof v === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v.trim());
 const hex6 = v => { v = v.trim(); return (v.length === 4 ? "#" + [...v.slice(1)].map(x => x + x).join("") : v).toUpperCase(); };
@@ -3014,14 +3081,16 @@ const pickColors = (o, base) => { const r = { ...base }; Object.keys(o || {}).fo
 function colorVars(c, dark) {
   const v = dark
     ? { paper: c.background, surface: c.panels, ink: c.text, muted: mix(c.text, c.background, .4), line: mix(c.text, c.background, .85),
-        accent: c.main, "accent-2": mix(c.main, "#FFFFFF", .4), "accent-soft": mix(c.main, c.panels, .75), ochre: c.second, "ochre-soft": mix(c.second, c.panels, .75) }
+        accent: c.main, "accent-2": mix(c.main, "#FFFFFF", .4), "accent-soft": mix(c.main, c.panels, .75), ochre: c.second, "ochre-soft": mix(c.second, c.panels, .75),
+        wb: c.third, "wb-soft": mix(c.third, c.panels, .75) }
     : { paper: c.background, surface: c.panels, ink: c.text, muted: mix(c.text, c.background, .45), line: mix(c.text, c.background, .85),
-        accent: c.main, "accent-2": mix(c.main, "#000000", .35), "accent-soft": mix(c.main, "#FFFFFF", .82), ochre: c.second, "ochre-soft": mix(c.second, "#FFFFFF", .75) };
+        accent: c.main, "accent-2": mix(c.main, "#000000", .35), "accent-soft": mix(c.main, "#FFFFFF", .82), ochre: c.second, "ochre-soft": mix(c.second, "#FFFFFF", .75),
+        wb: c.third, "wb-soft": mix(c.third, "#FFFFFF", .8) };
   return Object.entries(v).map(([k, x]) => `--${k}:${x}`).join(";");
 }
 function applyColors(light, dark) {
   const L = pickColors(light, COLOR_DEFAULT);
-  const D = pickColors(dark, { ...DARK_DEFAULT, main: mix(L.main, "#FFFFFF", .35), second: mix(L.second, "#FFFFFF", .25) });
+  const D = pickColors(dark, { ...DARK_DEFAULT, main: mix(L.main, "#FFFFFF", .35), second: mix(L.second, "#FFFFFF", .25), third: mix(L.third, "#FFFFFF", .3) });
   let el = $("siteColors");
   if (!el) { el = document.createElement("style"); el.id = "siteColors"; document.head.appendChild(el); }
   const dv = colorVars(D, true);
@@ -3088,7 +3157,7 @@ function setLang(l) {
 document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
 
 /* ---------- theme ---------- */
-const rerender = () => { Object.values(charts).forEach(c => c.clear()); renderAll(); if (PDATA) renderPat(); if (WDATA) renderWb(); };
+const rerender = () => { Object.values(charts).forEach(c => c.clear()); renderAll(); if (PDATA) renderPat(); if (WDATA) renderWb(); if (WBC.length && MODE.startsWith("custom:")) renderWbBlocks($("customBody"), () => MODE.startsWith("custom:")); };
 try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender); } catch {}
 new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
