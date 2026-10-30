@@ -4,6 +4,8 @@ A free platform for bibliometric analysis and patent landscaping. Biblioscope ma
 patents of a topic, a country or a set of files, using open databases and your own exports. Available in
 English and French.
 
+**Live site: https://fatip2n.github.io/biblioscope/**
+
 **Total cost: $0.** The site is a single static page on GitHub Pages, with a small Cloudflare Worker (free plan)
 that keeps API keys secret.
 
@@ -47,6 +49,15 @@ Visitor ──► GitHub Pages (index.html, static)
   Web of Science licenses as long as raw records are not republished.
 
 **About page** with a user guide, indicator definitions, sources and limits (link: `#about`).
+
+## Customization (no code)
+
+The site reads two things from the repository at load time:
+- **`site.json`**: added tabs, author and contact on the About page, default language, hidden tabs and text overrides.
+- **`pages/`**: one Markdown (or HTML) file per added tab. Embed codes (YouTube, Google Forms, maps, Flourish,
+  Datawrapper…) can be pasted directly into these pages.
+
+See [EDITING.md](EDITING.md) for a step-by-step guide (in French).
 
 ## Data sources
 

@@ -1,0 +1,20 @@
+{
+  "about": {
+    "name": "",
+    "contact": ""
+  },
+  "defaultLang": "fr",
+  "hideTabs": [],
+  "tabs": [
+    {
+      "id": "ressources",
+      "title": { "fr": "Ressources", "en": "Resources" },
+      "file": { "fr": "pages/ressources.md", "en": "pages/resources.md" }
+    }
+  ],
+  "aboutExtra": "",
+  "texts": {
+    "fr": {},
+    "en": {}
+  }
+}
