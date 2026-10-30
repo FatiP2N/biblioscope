@@ -25,10 +25,10 @@
       }
     },
     {
-      "id": "economic-data",
+      "id": "sdg",
       "title": {
-        "fr": "Données économiques",
-        "en": "Economic Data"
+        "fr": "ODD",
+        "en": "SDG"
       },
       "file": {
         "fr": "pages/economic-data-fr.md",
@@ -38,7 +38,7 @@
   ],
   "aboutExtra": "",
   "texts": {
-    "fr": {},
-    "en": {}
+    "fr": { "tab.wb": "Données économiques" },
+    "en": { "tab.wb": "Economic Data" }
   }
 }
