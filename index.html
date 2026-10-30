@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Spectral:wght@500;600;700&display=swap">
 <style>
-/* Layout : barre de requête collante (onglets direct / import), bande d'indicateurs, puis grille de panneaux (2 colonnes, 1 sur mobile). */
+/* Layout: sticky query bar (tabs), indicator strip, then a grid of panels (2 columns, 1 on mobile). */
 :root{
   --paper:#F2F5F6; --surface:#FFFFFF; --ink:#13222B; --muted:#5B6C75; --line:#D6DFE3;
   --accent:#1C6E8C; --accent-2:#0E4A61; --accent-soft:#D5E8EF; --ochre:#B4741C; --ochre-soft:#F3E3C8;
@@ -39,7 +39,7 @@ button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-/* En-tête */
+/* Header */
 .top{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
 .top .wrap{padding-block:12px;display:grid;gap:10px}
 .brand{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -68,7 +68,7 @@ form.query{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1.7fr) au
 .go:hover{background:var(--accent-2)}
 .go:disabled{opacity:.6;cursor:progress}
 
-/* Sélecteur de pays (puces) */
+/* Country selector (chips) */
 .chips{display:flex;flex-wrap:wrap;gap:4px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:4px 6px;min-height:40px}
 .chips:focus-within{border-color:var(--accent)}
 .chips input{border:0!important;background:transparent!important;padding:4px!important;flex:1;min-width:8em;width:auto!important}
@@ -108,7 +108,7 @@ form.query.pq{grid-template-columns:minmax(0,1.5fr) minmax(0,1.4fr) minmax(0,1.4
 .setup code{font-family:var(--f-data);font-size:.8rem;background:var(--paper);padding:1px 5px;border-radius:3px}
 .seg button[disabled]{opacity:.45;cursor:not-allowed}
 
-/* Réglages */
+/* Settings */
 .settings{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-top:16px;display:grid;gap:12px}
 .settings h2{font-family:var(--f-display);margin:0;font-size:1.15rem}
 .settings .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -116,7 +116,7 @@ form.query.pq{grid-template-columns:minmax(0,1.5fr) minmax(0,1.4fr) minmax(0,1.4
 .settings p{margin:0;color:var(--muted);font-size:.85rem;max-width:75ch}
 .settings .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
-/* Indicateurs */
+/* Indicators */
 .kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:18px}
 .kpi{background:var(--surface);padding:14px 16px;display:grid;gap:2px;min-width:0;align-content:start}
 .kpi .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
@@ -133,7 +133,7 @@ form.query.pq{grid-template-columns:minmax(0,1.5fr) minmax(0,1.4fr) minmax(0,1.4
 .scope{margin:16px 0 0;font-family:var(--f-display);font-size:1.15rem;font-weight:500;color:var(--muted)}
 .scope b{color:var(--ink);font-weight:600}
 
-/* Panneaux */
+/* Panels */
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-block:16px 40px}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0;display:grid;gap:10px;align-content:start}
 .panel.wide{grid-column:1/-1}
@@ -190,7 +190,7 @@ footer p{max-width:90ch;margin:.3em 0}
 .loading .chart,.loading .scroll{opacity:.45;transition:opacity .2s}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
-/* Langue, fichiers importés, fusion */
+/* Language, imported files, merge */
 .lang{display:flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .lang button{background:none;border:0;padding:5px 9px;font-size:.78rem;font-weight:600;cursor:pointer;color:var(--muted);font-family:var(--f-data)}
 .lang button[aria-pressed="true"]{background:var(--accent);color:var(--surface)}
@@ -203,7 +203,7 @@ footer p{max-width:90ch;margin:.3em 0}
 #mergeStats .v{font-size:1.4rem}
 @media (max-width:640px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
-/* Réseaux, import Lens, page À propos */
+/* Networks, patent sample, About page */
 :root{--c1:#1C6E8C;--c2:#C2702A;--c3:#2E7D55;--c4:#B23A48;--c5:#6A4FA3;--c6:#2A8F8F;--c7:#8C7A1C;--c8:#5B6C75}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c1:#5CB2D2;--c2:#E39A55;--c3:#5FBF8C;--c4:#E07A86;--c5:#A58BE0;--c6:#5CC7C7;--c7:#D2BE5A;--c8:#93A6AF}}
 :root[data-theme="dark"]{--c1:#5CB2D2;--c2:#E39A55;--c3:#5FBF8C;--c4:#E07A86;--c5:#A58BE0;--c6:#5CC7C7;--c7:#D2BE5A;--c8:#93A6AF}
@@ -236,7 +236,7 @@ footer p{max-width:90ch;margin:.3em 0}
 .kpis.k5{grid-template-columns:repeat(5,minmax(0,1fr))}
 @media (max-width:900px){.kpis.k5{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:480px){.kpis.k5{grid-template-columns:repeat(2,minmax(0,1fr))}}
-/* Indicateurs de chargement */
+/* Loading indicators */
 .top{position:sticky}
 .progress{position:absolute;left:0;right:0;bottom:-1px;height:3px;overflow:hidden;background:var(--accent-soft)}
 .progress i{position:absolute;top:0;bottom:0;left:0;width:0;background:var(--accent);transition:width .35s ease}
@@ -249,6 +249,18 @@ footer p{max-width:90ch;margin:.3em 0}
 .panel.busy .chart,.panel.busy .map,.panel.busy .net,.panel.busy .scroll{opacity:.55;transition:opacity .2s}
 @keyframes bs-spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.progress.indet i{animation:none;width:100%;opacity:.5}.panel.busy::after{animation:none}}
+/* Custom pages (pages/ folder) */
+.custom h1{font-family:var(--f-display);font-size:1.9rem;margin:0;text-wrap:balance}
+.custom h2{font-family:var(--f-display);font-size:1.35rem;margin:22px 0 6px;color:var(--accent-2)}
+.custom img,.custom video,.custom iframe,.custom embed,.custom object{max-width:100%}
+.custom iframe{border:0;border-radius:var(--r);background:var(--surface)}
+.custom table{border-collapse:collapse;width:100%;display:block;overflow-x:auto}
+.custom th,.custom td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+.custom blockquote{margin:0;padding:8px 14px;border-left:3px solid var(--accent);background:var(--surface);border-radius:4px}
+.custom pre{overflow-x:auto;background:var(--surface);border:1px solid var(--line);padding:10px;border-radius:var(--r)}
+.custom hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+.embed{position:relative;width:100%;aspect-ratio:16/9;max-width:100%}
+.embed iframe{position:absolute;inset:0;width:100%;height:100%}
 .byline{display:flex;flex-wrap:wrap;gap:6px 18px;border-top:1px solid var(--line);padding-top:12px;color:var(--muted);font-size:.9rem}
 </style>
 </head>
@@ -257,7 +269,7 @@ footer p{max-width:90ch;margin:.3em 0}
   <div class="wrap">
     <div class="brand">
       <h1>Biblio<span>scope</span></h1>
-      <div class="tabs" role="tablist" data-i18n-aria="aria.tabs">
+      <div class="tabs" id="tabs" role="tablist" data-i18n-aria="aria.tabs">
         <button type="button" role="tab" id="tabLive" aria-selected="true" data-i18n="tab.live"></button>
         <button type="button" role="tab" id="tabPat" aria-selected="false" data-i18n="tab.pat"></button>
         <button type="button" role="tab" id="tabFile" aria-selected="false" data-i18n="tab.file"></button>
@@ -398,6 +410,7 @@ footer p{max-width:90ch;margin:.3em 0}
     </div>
   </section>
 
+  <div class="banner err" id="siteBanner" hidden></div>
   <div class="banner" id="demoBanner" hidden data-i18n-html="demo.banner"></div>
   <div class="banner info" id="fileBanner" hidden></div>
 
@@ -594,8 +607,13 @@ footer p{max-width:90ch;margin:.3em 0}
       <p class="lead" data-i18n="about.lead"></p>
       <nav class="toc" id="aboutToc" data-i18n-aria="about.toc"></nav>
       <div id="aboutBody" data-i18n-html="about.body"></div>
+      <div class="custom" id="aboutExtra" hidden></div>
       <div class="byline" id="aboutByline" hidden></div>
     </article>
+  </div>
+
+  <div id="customView" hidden>
+    <article class="about custom" id="customBody"></article>
   </div>
 </main>
 
@@ -727,7 +745,8 @@ fr: {
   "off.EP": "OEB (EP)", "off.WO": "OMPI (PCT)", "off.EA": "Eurasie (EA)", "off.AP": "ARIPO (AP)", "off.OA": "OAPI (OA)", "off.GC": "Golfe (GC)",
   "ex.inst": "Exemple : institution {x}", "ex.journal": "Exemple : revue {x}", "ex.title": "Exemple de publication n° {n} (titre fictif)",
   "ex.author": "Auteur {x}.", "ex.journal1": "Revue d'exemple", "ex.applicant": "Exemple : déposant {x}", "ex.patent": "Exemple de brevet n° {n} (titre fictif)",
-  "tab.about": "À propos", "ld.loading": "chargement…", "ld.offices": "offices {a} / {b}", "ld.sample": "notices…", "ld.noSample": "échantillon indisponible",
+  "tab.about": "À propos", "custom.err": "Impossible d'afficher {file} : {msg}. Vérifiez le nom du fichier dans site.json et sa présence dans le dépôt.",
+  "site.err": "<strong>site.json contient une erreur</strong> et n'a pas été appliqué : {msg}. Vérifiez les guillemets, les virgules et les accolades (outil gratuit : jsonlint.com).", "ld.loading": "chargement…", "ld.offices": "offices {a} / {b}", "ld.sample": "notices…", "ld.noSample": "échantillon indisponible",
   "pp.zeroOffices": "{n} offices interrogés sans résultat sur {m} ne sont pas affichés.", "pp.zeroKw": "Le mot-clé est cherché dans les titres et résumés en anglais : les offices qui publient seulement dans leur langue en ont peu ou pas.", "src.sample": "Échantillon Espacenet", "unit.sample": "familles de brevets (échantillon Espacenet)", "unit.epo": "publications de brevets (documents, pas des familles)",
   "pk.distinctApp": "Déposants distincts", "pk.inSample": "dans l'échantillon de {n} familles", "pk.ctrySample": "pays des déposants · échantillon de {n} familles",
   "pp.topRank": "Premiers résultats (pertinence)", "pp.topRankSrc": "ordre de l'export Espacenet", "pp.topRecent": "Derniers brevets publiés (échantillon)", "pp.topRecentSrc": "notices bibliographiques de l'OEB", "th.offices": "Offices",
@@ -900,7 +919,8 @@ en: {
   "off.EP": "EPO (EP)", "off.WO": "WIPO (PCT)", "off.EA": "Eurasia (EA)", "off.AP": "ARIPO (AP)", "off.OA": "OAPI (OA)", "off.GC": "Gulf (GC)",
   "ex.inst": "Example: institution {x}", "ex.journal": "Example: journal {x}", "ex.title": "Example publication no. {n} (fictitious title)",
   "ex.author": "Author {x}.", "ex.journal1": "Example journal", "ex.applicant": "Example: applicant {x}", "ex.patent": "Example patent no. {n} (fictitious title)",
-  "tab.about": "About", "ld.loading": "loading…", "ld.offices": "offices {a} / {b}", "ld.sample": "records…", "ld.noSample": "sample unavailable",
+  "tab.about": "About", "custom.err": "Cannot display {file}: {msg}. Check the file name in site.json and that the file is in the repository.",
+  "site.err": "<strong>site.json has an error</strong> and was not applied: {msg}. Check quotes, commas and braces (free tool: jsonlint.com).", "ld.loading": "loading…", "ld.offices": "offices {a} / {b}", "ld.sample": "records…", "ld.noSample": "sample unavailable",
   "pp.zeroOffices": "{n} of the {m} offices queried returned no results and are not shown.", "pp.zeroKw": "Keywords are searched in English titles and abstracts: offices that publish only in their own language have few or none.", "src.sample": "Espacenet sample", "unit.sample": "patent families (Espacenet sample)", "unit.epo": "patent publications (documents, not families)",
   "pk.distinctApp": "Distinct applicants", "pk.inSample": "in the sample of {n} families", "pk.ctrySample": "applicant countries · sample of {n} families",
   "pp.topRank": "Top results (relevance)", "pp.topRankSrc": "Espacenet export order", "pp.topRecent": "Latest published patents (sample)", "pp.topRecentSrc": "EPO bibliographic records", "th.offices": "Offices",
@@ -962,11 +982,11 @@ const CLS = [["A","Nécessités courantes de la vie","Human necessities"],["B","
 ["Y02","Atténuation du changement climatique (CPC seulement)","Climate change mitigation (CPC only)"],["Y02A","Adaptation au changement climatique","Climate change adaptation"],["Y02B","Bâtiments bas carbone","Low-carbon buildings"],["Y02D","TIC économes en énergie","Energy-efficient ICT"],["Y02E","Énergie bas carbone","Low-carbon energy"],["Y02E10/50","Énergie photovoltaïque","Photovoltaic energy"],["Y02E10/549","Cellules PV organiques ou pérovskites","Organic or perovskite PV cells"],["Y02E10/70","Énergie éolienne","Wind energy"],["Y02E60/10","Stockage d'énergie, batteries","Energy storage, batteries"],["Y02E60/36","Hydrogène","Hydrogen"],["Y02P","Industrie bas carbone","Low-carbon industry"],["Y02T","Transports bas carbone","Low-carbon transport"],["Y02W","Déchets et eaux usées","Waste and wastewater"],
 ["A01N","Biocides, pesticides","Biocides, pesticides"],["A23L","Aliments","Foods"],["A61B","Diagnostic, chirurgie","Diagnosis, surgery"],["A61F","Prothèses, pansements","Prostheses, dressings"],["A61K","Préparations médicales","Medical preparations"],["A61M","Dispositifs d'administration","Delivery devices"],["A61P","Activité thérapeutique","Therapeutic activity"],["B01D","Séparation","Separation"],["B01J","Catalyse","Catalysis"],["B33Y","Fabrication additive","Additive manufacturing"],["B60L","Propulsion électrique des véhicules","Electric vehicle propulsion"],["B82Y","Nanotechnologies","Nanotechnology"],["C01B","Éléments non métalliques","Non-metallic elements"],["C02F","Traitement de l'eau","Water treatment"],["C07D","Composés hétérocycliques","Heterocyclic compounds"],["C07F","Composés organométalliques","Organometallic compounds"],["C07K","Peptides","Peptides"],["C08L","Compositions de polymères","Polymer compositions"],["C12N","Micro-organismes, génie génétique","Microorganisms, genetic engineering"],["C12Q","Analyses d'acides nucléiques","Nucleic acid assays"],["C22C","Alliages","Alloys"],["C25B","Électrolyse","Electrolysis"],["E21B","Forage","Drilling"],["F03D","Éoliennes","Wind motors"],["F24S","Capteurs solaires thermiques","Solar heat collectors"],["G01N","Analyse des matériaux","Materials analysis"],["G01S","Radar, localisation","Radar, positioning"],["G06F","Traitement de données numériques","Digital data processing"],["G06N","Intelligence artificielle","Artificial intelligence"],["G06Q","Méthodes commerciales","Business methods"],["G06T","Traitement d'images","Image processing"],["G06V","Reconnaissance d'images","Image recognition"],["G16H","Informatique médicale","Healthcare informatics"],["H01G","Condensateurs","Capacitors"],["H01L","Dispositifs à semi-conducteurs","Semiconductor devices"],["H01M","Batteries, piles à combustible","Batteries, fuel cells"],["H02J","Réseaux électriques, recharge","Power networks, charging"],["H02S","Modules photovoltaïques","Photovoltaic modules"],["H04L","Transmission numérique","Digital transmission"],["H04N","Image, vidéo","Image, video"],["H04W","Réseaux sans fil","Wireless networks"],["H10K","Électronique organique","Organic electronics"]];
 
-/* ===== Configuration du site publié / Published site configuration =====
-   Renseignez ici l'URL de votre Worker pour que tous les visiteurs en profitent. */
+/* ===== Published site configuration =====
+   Set your Worker URL here so that every visitor uses it. Most settings can also be changed in site.json. */
 const SITE_CONFIG = {
   workerUrl: "https://biblioscope.fatima-belmehdi.workers.dev", openAlexViaWorker: true, defaultLang: "fr",
-  about: { name: "", contact: "" }   // affichés en bas de la page « À propos » s'ils sont renseignés
+  about: { name: "", contact: "" }   // shown at the bottom of the About page when filled in
 };
 
 (() => {
@@ -975,7 +995,7 @@ const $ = id => document.getElementById(id);
 const CUR_YEAR = new Date().getFullYear();
 $("y2").value = CUR_YEAR; $("py2").value = CUR_YEAR;
 
-/* ---------- stockage local ---------- */
+/* ---------- local storage ---------- */
 const store = {
   get(k, d = "") { try { const v = localStorage.getItem("bs_" + k); return v === null ? d : v; } catch { return d; } },
   set(k, v) { try { localStorage.setItem("bs_" + k, v); } catch {} }
@@ -986,7 +1006,7 @@ const cfg = {
   get viaWorker() { return store.get("viaWorker", SITE_CONFIG.openAlexViaWorker ? "1" : "0") === "1"; }
 };
 
-/* ---------- langue ---------- */
+/* ---------- language ---------- */
 let LANG = (() => {
   const s = store.get("lang", "");
   if (s === "fr" || s === "en") return s;
@@ -1018,9 +1038,10 @@ function applyStatic() {
   document.querySelectorAll("[data-i18n-ph]").forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
   document.querySelectorAll("[data-i18n-aria]").forEach(el => { el.setAttribute("aria-label", t(el.dataset.i18nAria)); });
   document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === LANG)));
+  if (typeof drawCustomTabs === "function") try { drawCustomTabs(); } catch {}
 }
 
-/* ---------- pays ---------- */
+/* ---------- countries ---------- */
 const ISO = "AF AL DZ AS AD AO AI AG AR AM AW AU AT AZ BS BH BD BB BY BE BZ BJ BM BT BO BA BW BR BN BG BF BI CV KH CM CA KY CF TD CL CN CO KM CG CD CK CR CI HR CU CW CY CZ DK DJ DM DO EC EG SV GQ ER EE SZ ET FK FO FJ FI FR GF PF GA GM GE DE GH GI GR GL GD GP GU GT GN GW GY HT VA HN HK HU IS IN ID IR IQ IE IL IT JM JP JO KZ KE KI KP KR XK KW KG LA LV LB LS LR LY LI LT LU MO MG MW MY MV ML MT MH MQ MR MU YT MX FM MD MC MN ME MS MA MZ MM NA NR NP NL NC NZ NI NE NG NU MK MP NO OM PK PW PS PA PG PY PE PH PL PT PR QA RE RO RU RW KN LC VC WS SM ST SA SN RS SC SL SG SX SK SI SB SO ZA SS ES LK SD SR SE CH SY TW TJ TZ TH TL TG TO TT TN TR TM TV UG UA AE GB US UY UZ VU VE VN YE ZM ZW".split(" ");
 const dn = l => { try { return new Intl.DisplayNames([l], { type: "region" }); } catch { return null; } };
 const DN = { fr: dn("fr"), en: dn("en") };
@@ -1074,13 +1095,13 @@ function fillDatalists() {
   $("clsList").innerHTML = CLS.map(r => `<option value="${esc(r[0])}" label="${esc(LANG === "fr" ? r[1] : r[2])}"></option>`).join("");
 }
 
-/* ---------- couleurs ---------- */
+/* ---------- colors ---------- */
 const tok = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const T = () => ({ ink: tok("--ink"), muted: tok("--muted"), line: tok("--line"), surface: tok("--surface"), paper: tok("--paper"),
   accent: tok("--accent"), accent2: tok("--accent-2"), soft: tok("--accent-soft"), ochre: tok("--ochre"), ochreSoft: tok("--ochre-soft"),
   good: tok("--good"), mono: "IBM Plex Mono, ui-monospace, monospace", body: "IBM Plex Sans, system-ui, sans-serif" });
 
-/* ---------- état ---------- */
+/* ---------- state ---------- */
 let DATA = null, PAT = null, MODE = "live", VIEW = "world", timer = null, inflight = 0, LAST_ROWS = [], SELECTED = [];
 const charts = {};
 function chart(id) {
@@ -1094,7 +1115,7 @@ function noChart(id, msg) {
 }
 window.addEventListener("resize", () => Object.values(charts).forEach(c => c.resize()));
 function setStatus(kind, txt) { $("dot").className = "dot " + kind; $("stateTxt").textContent = txt; }
-/* Chargement : barre fine sous l'en-tête (-1 = indéterminée, 0..1 = avancement, null = masquée) et repère par panneau */
+/* Loading: thin bar under the header (-1 = indeterminate, 0..1 = progress, null = hidden) and a marker on each panel */
 function setProgress(v) {
   const p = $("progress"); if (!p) return;
   if (v == null) { p.hidden = true; return; }
@@ -1110,7 +1131,7 @@ function busy(el, label) {
 }
 function pubBusy(on) { document.querySelectorAll("#pubView .panel").forEach(p => busy(p, on ? t("ld.loading") : null)); }
 
-/* ---------- fond de carte : Maroc + Sahara occidental ---------- */
+/* ---------- base map: Morocco + Sahara merged ---------- */
 function decodeRing(str, off, scale) {
   const out = []; let px = off[0], py = off[1];
   for (let i = 0; i < str.length; i += 2) {
@@ -1156,7 +1177,7 @@ function mapName() {
   return MAPNAME;
 }
 
-/* ---------- OpenAlex (avec cache mémoire de 10 min) ---------- */
+/* ---------- OpenAlex (with a 10-minute in-memory cache) ---------- */
 const CACHE = new Map();
 async function getJSON(url, force) {
   const hit = CACHE.get(url);
@@ -1243,7 +1264,7 @@ function describe(spec) {
   return `${what} · ${where}`;
 }
 
-/* ---------- données d'exemple ---------- */
+/* ---------- example data ---------- */
 function seeded(str) {
   let h = 2166136261; for (const ch of str) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
   let seed = h >>> 0; return () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
@@ -1298,7 +1319,7 @@ function demoData(s) {
 }
 
 /* ======================================================================
-   IMPORT ET FUSION (WoS, Scopus, Publish or Perish)
+   IMPORT AND MERGE (WoS, Scopus, Publish or Perish)
    ====================================================================== */
 function loadScript(src) {
   return new Promise((ok, ko) => { const el = document.createElement("script"); el.src = src; el.onload = ok; el.onerror = () => ko(new Error("Script: " + src)); document.head.appendChild(el); });
@@ -1421,7 +1442,7 @@ function detectBase(s0, tagged) {
   if (tagged || "ut" in s0 || "ut (unique wos id)" in s0 || "tc" in s0 || "times cited, all databases" in s0) return "WoS";
   return "Autre";
 }
-/* Une notice normalisée */
+/* One normalized record */
 function normalize(r, base) {
   const title = stripTags(undouble(pick(r, COLS.title)));
   const year = parseInt(pick(r, COLS.year), 10);
@@ -1440,8 +1461,8 @@ function normalize(r, base) {
     bases: [base], citesBy: { [base]: isNaN(cites) ? null : cites }, cites: isNaN(cites) ? 0 : cites
   };
 }
-let FILES = [];   // { name, base, recs (normalisées), raw: nombre lu, internal: doublons internes }
-let MERGE = null; // résultat de la fusion
+let FILES = [];   // { name, base, recs (normalized), raw: records read, internal: internal duplicates }
+let MERGE = null; // merge result
 function dedupeWithin(recs) {
   const seen = new Set(), out = []; let dropped = 0;
   for (const r of recs) {
@@ -1491,7 +1512,7 @@ function runMerge() {
       if (i != null) { mergeInto(master[i], r, rule); rule === "doi" ? nDoi++ : nTitle++; }
       else { const idx = master.push(r) - 1; index(r, idx); addedHere.push(idx); }
     }
-    /* quasi-doublons : nouvelles notices de ce fichier vs notices des fichiers précédents restées seules */
+    /* near-duplicates: new records of this file vs unmatched records of previous files */
     if (fi > 0) {
       const earlier = master.filter(m => m.fileIdx < fi && m.bases.length === 1).map(m => ({ m, ws: wordSet(m.nt) }));
       for (const idx of addedHere) {
@@ -1601,7 +1622,7 @@ function renderMerge() {
   const prov = new Map(); mg.records.forEach(r => { const k = r.bases.join(" + "); prov.set(k, (prov.get(k) || 0) + 1); });
   const rows = [...prov.entries()].sort((a, b) => b[0].split(" + ").length - a[0].split(" + ").length || b[1] - a[1]);
   $("tProv").tBodies[0].innerHTML = rows.map(([k, n]) => `<tr><td>${esc(k)}</td><td class="n">${fmt(n)}</td><td class="n">${pct(n / mg.records.length)}</td></tr>`).join("");
-  /* couverture sur les années communes, pour deux bases */
+  /* coverage over the common years, for two databases */
   let cov = "";
   const bases = [...new Set(FILES.map(f => f.base))];
   if (bases.length === 2) {
@@ -1621,7 +1642,7 @@ function renderMerge() {
   $("reviewBox").hidden = !mg.review.length;
   $("tReview").tBodies[0].innerHTML = mg.review.slice(0, 100).map(x => `<tr><td class="n">${pct(x.j)}</td><td>${esc(x.a.title)}<div class="w-meta">${esc(x.a.bases.join(" + "))}</div></td><td>${esc(x.b.title)}<div class="w-meta">${esc(x.b.bases.join(" + "))}</div></td><td class="n">${x.a.year ?? "—"} / ${x.b.year ?? "—"}</td></tr>`).join("");
 }
-let dlNS; // capacité « downloads » quand la page est vue dans claude.ai ; sinon téléchargement navigateur classique
+let dlNS; // "downloads" capability when viewed inside claude.ai; otherwise a regular browser download
 if (window.claude && typeof window.claude.use === "function") window.claude.use("downloads").then(ns => { dlNS = ns; }).catch(() => { dlNS = null; });
 $("btnDownload").addEventListener("click", async () => {
   if (!MERGE) return;
@@ -1639,7 +1660,7 @@ $("btnCopyMerged").addEventListener("click", async e => {
   setTimeout(() => b.textContent = old, 1600);
 });
 
-/* ---------- rendu publications ---------- */
+/* ---------- publications rendering ---------- */
 function hIndex(works) {
   const c = works.map(w => w.cites).sort((a, b) => b - a);
   let h = 0; while (h < c.length && c[h] >= h + 1) h++;
@@ -1841,7 +1862,7 @@ function renderAll() {
   renderNet("pub");
 }
 
-/* ---------- pays sélectionnés (puces) ---------- */
+/* ---------- selected countries (chips) ---------- */
 function makeChips(boxId, inputId, getList, setList, opts) {
   const nameOf = (opts && opts.name) || cname, resolve = (opts && opts.resolve) || resolveCountryInput;
   const phEmpty = (opts && opts.ph) || "ph.country";
@@ -1875,7 +1896,7 @@ function focusCountry(cc) {
   SELECTED = [cc]; VIEW = "world"; pubChips.draw(); run();
 }
 
-/* ---------- recherche en direct ---------- */
+/* ---------- live search ---------- */
 function state() {
   let y1 = parseInt($("y1").value, 10) || 2005, y2 = parseInt($("y2").value, 10) || CUR_YEAR;
   y2 = Math.min(Math.max(y2, 1900), CUR_YEAR); y1 = Math.min(Math.max(y1, 1900), y2);
@@ -1925,7 +1946,7 @@ async function checkBudget() {
 }
 
 /* ======================================================================
-   ONGLET BREVETS
+   PATENTS TAB
    ====================================================================== */
 const normCode = s => String(s || "").toUpperCase().replace(/\s+/g, "");
 const CLSMAP = new Map(CLS.map(r => [normCode(r[0]), r]));
@@ -1937,7 +1958,7 @@ function clsLabel(sym) {
 const rollup = (sym, level) => { const s = normCode(sym); if (level === "subclass") return s.slice(0, 4); if (level === "group") return s.split("/")[0]; return s; };
 const officeName = c => (I18N[LANG]["off." + c] || I18N.fr["off." + c]) ? t("off." + c) : cname(c);
 let PSEL = [], PDATA = null, PVIEW = "applicant", PLEVEL = "subclass", pinflight = 0, LAST_PROWS = [], pMapBound = false, pCodesBound = false;
-/* Juridictions : pays + offices régionaux et internationaux */
+/* Jurisdictions: countries + regional and international offices */
 const REGIONAL = ["EP", "WO", "EA", "AP", "OA", "GC"];
 function resolveOffice(v) {
   const s = String(v || "").trim(); if (!s) return null;
@@ -1973,17 +1994,17 @@ async function patCall(url) {
   if (!r.ok) throw new Error(j.error || t("err.http", { src: "Proxy", code: r.status }));
   return j;
 }
-/* L'OEB accepte environ 30 recherches par minute : le site en demande au plus 25 nouvelles par minute,
-   par lots, et le proxy garde chaque comptage en cache. Les données s'affichent au fur et à mesure. */
+/* The EPO accepts about 30 searches per minute: the site asks for at most 25 new ones per minute,
+   in batches, and the proxy caches every count. Data is displayed as it arrives. */
 let OPS_RATE = 25;
 let opsWin = { t0: 0, used: 0 };
 function opsBudget() { const n = Date.now(); if (n - opsWin.t0 > 60000) opsWin = { t0: n, used: 0 }; return Math.max(0, OPS_RATE - opsWin.used); }
-/* L'OEB annonce son état dans chaque réponse, ex. « busy (… search=green:15) » : le site suit ce rythme. */
+/* The EPO reports its state in every response, e.g. "busy (… search=green:15)": the site follows that pace. */
 function opsAdapt(throttle) {
   const m = /search=(\w+):(\d+)/.exec(throttle || ""); if (!m) return;
   const color = m[1], n = parseInt(m[2], 10);
   const factor = color === "green" ? 1 : color === "yellow" ? 0.6 : color === "red" ? 0.3 : 0;
-  OPS_RATE = Math.max(3, Math.min(25, Math.floor(n * factor) - 1));   // « black » : pause d'une minute ci-dessous, puis reprise lente
+  OPS_RATE = Math.max(3, Math.min(25, Math.floor(n * factor) - 1));   // "black": one-minute pause below, then a slow restart
   if (color === "black") opsWin = { t0: Date.now(), used: 999 };
 }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -2010,7 +2031,7 @@ async function fetchPat(ps, isCurrent, onPartial) {
     }
     const job = queue[0];
     const j = await patCall(patURL(ps, { part: job.part, max: Math.min(10, budget), ...(job.offices ? { offices: job.offices.join(",") } : {}) }));
-    if (j.source !== "epo") return j;                // Lens : réponse complète en un appel
+    if (j.source !== "epo") return j;                // Lens: complete answer in one call
     info = j; rounds++;
     opsWin.used += j.fetched || 0;
     opsAdapt(j.throttle);
@@ -2060,7 +2081,7 @@ function patDemo(ps) {
     date: `${ps.y1 + Math.floor(rnd() * (ps.y2 - ps.y1 + 1))}-0${1 + Math.floor(rnd() * 9)}-15`, applicants: [t("ex.applicant", { x: L(i % 12) })], cites: Math.round(600 / Math.pow(i + 1, 0.7)), url: null }));
   return { source: "demo", unit: t("unit.demo"), total, byYear, byOffice, byApplicantCountry, topApplicants, topCodes, legal, top, warnings: [] };
 }
-/* Dernières réponses du serveur brevets, gardées dans ce navigateur pour le cas où il ne répond plus */
+/* Last patent server responses, kept in this browser in case it stops responding */
 const PCACHE_KEY = "patcache";
 const pKey = ps => JSON.stringify([ps.q.toLowerCase(), (ps.applicant || "").toLowerCase(), ps.codes, ps.clsType, ps.countries || [], ps.y1, ps.y2]);
 function pCacheRead() { try { return JSON.parse(store.get(PCACHE_KEY, "null")) || { entries: {}, last: null }; } catch { return { entries: {}, last: null }; } }
@@ -2106,7 +2127,7 @@ async function runPat() {
         const psNow = ps;
         d = await fetchPat(ps, () => my === pinflight && MODE === "pat", (part, wait) => {
           PDATA = { ...part, ps: psNow, kind: "api", loading: !part.complete, offline: null };
-          $("pgo").disabled = false; $("pgrid").classList.remove("loading");   // une nouvelle recherche reste possible pendant le chargement
+          $("pgo").disabled = false; $("pgrid").classList.remove("loading");   // a new search stays possible while loading
           const views = availableViews(PDATA); if (!views.includes(PVIEW)) PVIEW = views[0] || "office";
           renderPat();
           setStatus("", t("pload.progress", { a: fmt(part.done), b: fmt(part.expected) }) + (wait ? t("pload.wait", { s: wait }) : "") + t("pload.cachedNote"));
@@ -2302,7 +2323,7 @@ $("pform").addEventListener("submit", e => { e.preventDefault(); runPat(); });
 $("pclsType").addEventListener("change", () => runPat());
 
 /* ======================================================================
-   RÉSEAUX DE CO-OCCURRENCE (principes de VOSviewer)
+   CO-OCCURRENCE NETWORKS (VOSviewer principles)
    ====================================================================== */
 const NET = { pub: { color: "cluster", type: null, edges: [], nodes: [] }, pat: { color: "cluster", type: null, edges: [], nodes: [] } };
 function louvain(n, edges) {
@@ -2352,7 +2373,7 @@ function buildNetwork(docs, field, maxNodes, maxNames) {
     }
   }
   let edges = [...ew.entries()].map(([key, w]) => ({ s: Math.floor(key / 10000), t: key % 10000, w })).sort((a, b) => b.w - a.w);
-  /* chaque nœud garde ses liens les plus forts (comme la sélection des liens dans VOSviewer) */
+  /* each node keeps its strongest links (like link selection in VOSviewer) */
   const kept = [], perNode = new Array(top.length).fill(0), K = 6, CAP = Math.max(80, top.length * 8);
   for (const e of edges) { if (kept.length >= CAP) break; if (perNode[e.s] < K || perNode[e.t] < K) { kept.push(e); perNode[e.s]++; perNode[e.t]++; } }
   edges = kept;
@@ -2462,7 +2483,7 @@ function renderNet(p) {
 });
 
 /* ======================================================================
-   BREVETS DEPUIS UN EXPORT LENS (échantillon intégré ou fichier importé)
+   PATENT RECORDS: EMBEDDED ESPACENET SAMPLE
    ====================================================================== */
 let SAMPLE = { meta: null, records: [] };
 try { SAMPLE = JSON.parse($("patSample").textContent); } catch { SAMPLE = { meta: null, records: [] }; }
@@ -2480,7 +2501,7 @@ function filterPatents(recs, ps) {
 }
 const cntBy = (f, fn) => { const m = new Map(); for (const r of f) for (const x of new Set(fn(r) || [])) if (x) m.set(x, (m.get(x) || 0) + 1); return [...m.entries()].sort((a, b) => b[1] - a[1]); };
 const patLink = r => r.id ? "https://lens.org/" + r.id : (r.k ? "https://worldwide.espacenet.com/patent/search?q=pn%3D" + encodeURIComponent(r.k) : null);
-/* Indicateurs calculés sur des notices (échantillon Espacenet ou notices OEB) */
+/* Indicators computed on records (Espacenet sample or EPO records) */
 function sampleStats(f, ps) {
   const has = fn => f.some(r => { const v = fn(r); return Array.isArray(v) ? v.length : v; });
   let topBy, sorted;
@@ -2513,7 +2534,7 @@ function analyzePatents(recs, ps) {
 $("pSample").addEventListener("click", () => { PSRC = "sample"; runPat(); });
 $("pLive").addEventListener("click", () => { PSRC = "api"; runPat(); });
 
-/* ---------- onglets ---------- */
+/* ---------- tabs ---------- */
 function setMode(m) {
   MODE = m;
   $("tabLive").setAttribute("aria-selected", String(m === "live"));
@@ -2522,8 +2543,16 @@ function setMode(m) {
   $("tabAbout").setAttribute("aria-selected", String(m === "about"));
   $("liveControls").hidden = m !== "live"; $("patControls").hidden = m !== "pat"; $("importer").hidden = m !== "file";
   $("autoBox").hidden = m === "file"; $("statusBar").hidden = m === "about";
-  $("pubView").hidden = m === "pat" || m === "about"; $("patView").hidden = m !== "pat"; $("aboutView").hidden = m !== "about";
-  try { if (m === "about") { if (location.hash !== "#about") location.hash = "about"; } else if (location.hash === "#about") history.replaceState(null, "", location.pathname + location.search); } catch {}
+  const isCustom = m.startsWith("custom:"), cid = isCustom ? m.slice(7) : "";
+  document.querySelectorAll("#tabs [data-custom]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.custom === cid)));
+  if (isCustom) { $("liveControls").hidden = true; $("autoBox").hidden = true; $("statusBar").hidden = true; }
+  $("pubView").hidden = m === "pat" || m === "about" || isCustom; $("patView").hidden = m !== "pat"; $("aboutView").hidden = m !== "about"; $("customView").hidden = !isCustom;
+  try {
+    const want = m === "about" ? "#about" : isCustom ? "#" + cid : "";
+    if (want && location.hash !== want) location.hash = want.slice(1);
+    else if (!want && location.hash && location.hash !== "#") history.replaceState(null, "", location.pathname + location.search);
+  } catch {}
+  if (isCustom) { inflight++; pinflight++; $("demoBanner").hidden = true; $("fileBanner").hidden = true; setProgress(null); renderCustom(cid); window.scrollTo(0, 0); return; }
   if (m === "about") { inflight++; pinflight++; $("demoBanner").hidden = true; $("fileBanner").hidden = true; renderAbout(); window.scrollTo(0, 0); return; }
   if (m !== "live") $("demoBanner").hidden = true;
   if (m !== "file") $("fileBanner").hidden = true;
@@ -2540,7 +2569,11 @@ $("tabLive").addEventListener("click", () => setMode("live"));
 $("tabPat").addEventListener("click", () => setMode("pat"));
 $("tabFile").addEventListener("click", () => setMode("file"));
 $("tabAbout").addEventListener("click", () => setMode("about"));
-window.addEventListener("hashchange", () => { if (location.hash === "#about" && MODE !== "about") setMode("about"); });
+window.addEventListener("hashchange", () => {
+  const h = location.hash.slice(1);
+  if (h === "about" && MODE !== "about") setMode("about");
+  else if (h && CUSTOM.some(x => x.id === h) && MODE !== "custom:" + h) setMode("custom:" + h);
+});
 function renderAbout() {
   const body = $("aboutBody");
   $("aboutToc").innerHTML = `<span class="flabel">${esc(t("about.toc"))}</span>` + [...body.querySelectorAll("section")].map(sec => {
@@ -2551,6 +2584,84 @@ function renderAbout() {
   if (a.name) parts.push(`<span>${esc(t("about.author"))} : <b>${esc(a.name)}</b></span>`);
   if (a.contact) parts.push(`<span>${esc(t("about.contact"))} : <span class="mono">${esc(a.contact)}</span></span>`);
   $("aboutByline").innerHTML = parts.join(""); $("aboutByline").hidden = !parts.length;
+  const extra = SITE && SITE.aboutExtra ? pickLang(SITE.aboutExtra) : "";
+  $("aboutExtra").hidden = !extra;
+  if (extra) renderFileInto($("aboutExtra"), extra, () => MODE === "about");
+}
+
+/* ======================================================================
+   NO-CODE CUSTOMIZATION: site.json + pages/ folder
+   ====================================================================== */
+let SITE = null;
+const CUSTOM = [];   // added tabs: { id, title: {fr, en}, file }
+const MARKED_URL = "https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js";
+const pickLang = v => v == null ? "" : typeof v === "string" ? v : (v[LANG] || v.fr || v.en || "");
+const BUILTIN_TABS = { live: "tabLive", patents: "tabPat", import: "tabFile", about: "tabAbout" };
+async function renderFileInto(el, file, stillWanted) {
+  el.innerHTML = `<p class="note">${esc(t("ld.loading"))}</p>`;
+  try {
+    const r = await fetch(file, { cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    let html = await r.text();
+    if (/\.(md|markdown|txt)$/i.test(file)) {
+      if (!window.marked) await loadScript(MARKED_URL);
+      html = window.marked.parse(html);
+    }
+    if (stillWanted && !stillWanted()) return;
+    el.innerHTML = html;
+    // embed codes containing a <script> (Twitter, Flourish…) must be re-activated
+    el.querySelectorAll("script").forEach(old => {
+      const sc = document.createElement("script");
+      [...old.attributes].forEach(a => sc.setAttribute(a.name, a.value));
+      sc.textContent = old.textContent; old.replaceWith(sc);
+    });
+    el.querySelectorAll("a[href^='http']").forEach(a => { a.target = "_blank"; a.rel = "noopener"; });
+  } catch (e) {
+    el.innerHTML = `<div class="banner err">${esc(t("custom.err", { file, msg: e.message }))}</div>`;
+  }
+}
+function renderCustom(id) {
+  const tab = CUSTOM.find(x => x.id === id); if (!tab) return;
+  renderFileInto($("customBody"), pickLang(tab.file), () => MODE === "custom:" + id);
+}
+function drawCustomTabs() {
+  document.querySelectorAll("#tabs [data-custom]").forEach(b => { const tab = CUSTOM.find(x => x.id === b.dataset.custom); if (tab) b.textContent = pickLang(tab.title) || tab.id; });
+}
+async function loadSite() {
+  let r;
+  try { r = await fetch("site.json", { cache: "no-store" }); } catch { return; }   // preview or local file: nothing to load
+  if (!r.ok) return;
+  let j;
+  try { j = JSON.parse(await r.text()); }
+  catch (e) { $("siteBanner").innerHTML = t("site.err", { msg: esc(e.message) }); $("siteBanner").hidden = false; return; }
+  SITE = j;
+  if (j.about) SITE_CONFIG.about = { ...(SITE_CONFIG.about || {}), ...j.about };
+  if (j.texts) ["fr", "en"].forEach(l => Object.assign(I18N[l], (j.texts && j.texts[l]) || {}));
+  (j.hideTabs || []).forEach(name => { const b = $(BUILTIN_TABS[name]); if (b) b.hidden = true; });
+  const aboutBtn = $("tabAbout");
+  (j.tabs || []).forEach(tab => {
+    if (!tab || !tab.id || !tab.file) return;
+    const id = String(tab.id).toLowerCase().replace(/[^a-z0-9-]/g, "-");
+    if (CUSTOM.some(x => x.id === id) || ["about", "settings", "sidebar", "customize", "upgrade", "downloads"].includes(id)) return;
+    CUSTOM.push({ id, title: tab.title || id, file: tab.file });
+    const b = document.createElement("button");
+    b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", "false"); b.dataset.custom = id;
+    b.addEventListener("click", () => setMode("custom:" + id));
+    if (tab.after === "about" || !aboutBtn) $("tabs").appendChild(b); else $("tabs").insertBefore(b, aboutBtn);
+  });
+  applyStatic();
+  const wantLang = j.defaultLang;
+  if ((wantLang === "fr" || wantLang === "en") && !store.get("lang", "") && wantLang !== LANG) setLang(wantLang);
+  const h = location.hash.slice(1);
+  if (h && CUSTOM.some(x => x.id === h)) setMode("custom:" + h);
+  else if (MODE === "about") renderAbout();
+  else {
+    const cur = { live: "tabLive", pat: "tabPat", file: "tabFile" }[MODE];
+    if (cur && $(cur).hidden) {
+      const first = [...document.querySelectorAll("#tabs button")].find(x => !x.hidden);
+      if (first) first.click();
+    } else if (MODE === "live" && j.texts) run();
+  }
 }
 $("file").addEventListener("change", e => { addFiles([...e.target.files]); e.target.value = ""; });
 const drop = $("drop");
@@ -2558,7 +2669,7 @@ const drop = $("drop");
 ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
 drop.addEventListener("drop", e => addFiles([...e.dataTransfer.files]));
 
-/* ---------- copie CSV ---------- */
+/* ---------- CSV copy ---------- */
 function csv(rows) { return rows.map(r => r.map(v => { const s = String(v ?? ""); return /[",;\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(",")).join("\n"); }
 document.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", async () => {
   const k = b.dataset.copy;
@@ -2573,7 +2684,7 @@ document.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click"
   setTimeout(() => b.textContent = old, 1600);
 }));
 
-/* ---------- réglages ---------- */
+/* ---------- settings ---------- */
 $("oaKey").value = cfg.key; $("workerUrl").value = store.get("worker") || SITE_CONFIG.workerUrl; $("viaWorker").checked = cfg.viaWorker;
 $("btnSettings").addEventListener("click", () => { const el = $("settings"); el.hidden = !el.hidden; $("btnSettings").setAttribute("aria-expanded", String(!el.hidden)); });
 $("saveSettings").addEventListener("click", () => {
@@ -2591,7 +2702,7 @@ $("testWorker").addEventListener("click", async () => {
   } catch { $("settingsMsg").textContent = t("set.ko"); }
 });
 
-/* ---------- actualisation automatique ---------- */
+/* ---------- auto refresh ---------- */
 $("auto").value = store.get("auto", "0");
 function setAuto() {
   clearInterval(timer); const m = Number($("auto").value); store.set("auto", String(m));
@@ -2599,7 +2710,7 @@ function setAuto() {
 }
 $("auto").addEventListener("change", setAuto);
 
-/* ---------- langue ---------- */
+/* ---------- language ---------- */
 function setLang(l) {
   if (l === LANG) return;
   LANG = l; store.set("lang", l); nf = new Intl.NumberFormat(LOC());
@@ -2608,17 +2719,18 @@ function setLang(l) {
   if (MODE === "live") run();
   else if (MODE === "pat") runPat();
   else if (MODE === "about") renderAbout();
+  else if (MODE.startsWith("custom:")) renderCustom(MODE.slice(7));
   else if (FILES.length) refreshFiles();
   else setStatus("", t("st.chooseFile"));
 }
 document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
 
-/* ---------- thème ---------- */
+/* ---------- theme ---------- */
 const rerender = () => { Object.values(charts).forEach(c => c.clear()); renderAll(); if (PDATA) renderPat(); };
 try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender); } catch {}
 new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-/* ---------- démarrage ---------- */
+/* ---------- startup ---------- */
 applyStatic(); fillDatalists();
 let restored = false;
 try {
@@ -2640,6 +2752,7 @@ pubChips.draw(); patChips.draw();
 $("qform").addEventListener("submit", e => { e.preventDefault(); run(); });
 setAuto();
 if (location.hash === "#about") setMode("about"); else run();
+loadSite();
 })();
 </script>
 </body>
