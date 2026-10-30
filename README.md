@@ -57,7 +57,7 @@ The site reads two things from the repository at load time:
 - **`pages/`**: one Markdown (or HTML) file per added tab. Embed codes (YouTube, Google Forms, maps, Flourish,
   Datawrapper…) can be pasted directly into these pages.
 
-See [EDITING.md](EDITING.md) for a step-by-step guide (in French).
+See [EDITING.md](EDITING.md) for a step-by-step guide.
 
 ## Data sources
 
