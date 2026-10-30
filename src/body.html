@@ -5,6 +5,7 @@
       <div class="tabs" id="tabs" role="tablist" data-i18n-aria="aria.tabs">
         <button type="button" role="tab" id="tabLive" aria-selected="true" data-i18n="tab.live"></button>
         <button type="button" role="tab" id="tabPat" aria-selected="false" data-i18n="tab.pat"></button>
+        <button type="button" role="tab" id="tabWb" aria-selected="false" data-i18n="tab.wb"></button>
         <button type="button" role="tab" id="tabFile" aria-selected="false" data-i18n="tab.file"></button>
         <button type="button" role="tab" id="tabAbout" aria-selected="false" data-i18n="tab.about"></button>
       </div>
@@ -83,6 +84,25 @@
         <button class="ghost" type="button" id="pSample" data-i18n="pimp.sample"></button>
         <button class="ghost" type="button" id="pLive" hidden data-i18n="pimp.live"></button>
       </div>
+    </div>
+
+    <div id="wbControls" hidden>
+      <form class="query wq" id="wform" autocomplete="off">
+        <div class="field q">
+          <label for="wind" data-i18n="wf.indicator"></label>
+          <select id="wind"></select>
+          <input id="wcode" hidden data-i18n-ph="ph.wcode" data-i18n-aria="wf.code">
+        </div>
+        <div class="field c">
+          <label for="wcInput" data-i18n="wf.countries"></label>
+          <div class="chips" id="wchips"><input id="wcInput" list="countryList" data-i18n-ph="ph.country"></div>
+        </div>
+        <div class="field">
+          <label for="wy1" data-i18n="wf.years"></label>
+          <div class="years"><input id="wy1" type="number" min="1960" max="2100" value="2000" data-i18n-aria="aria.y1"><span>–</span><input id="wy2" type="number" min="1960" max="2100" data-i18n-aria="aria.y2"></div>
+        </div>
+        <button class="go" id="wgo" type="submit" data-i18n="btn.analyze"></button>
+      </form>
     </div>
 
     <section class="importer" id="importer" hidden>
@@ -331,6 +351,36 @@
       <section id="pTopPanel" class="panel wide">
         <div class="ph"><h2 id="pTopTitle"></h2><span class="src" id="pTopSrc"></span></div>
         <div class="scroll"><table id="tPTop"><thead><tr><th>#</th><th data-i18n="th.patent"></th><th data-i18n="th.number"></th><th class="n" data-i18n="th.published"></th><th class="n" id="pTopCol"></th></tr></thead><tbody></tbody></table></div>
+      </section>
+    </div>
+  </div>
+  <div id="wbView" hidden>
+    <p class="scope" id="wscope"></p>
+    <section class="kpis k4" data-i18n-aria="tab.wb">
+      <div class="kpi"><span class="k" id="wK1k" data-i18n="wk.latest"></span><span class="v" id="wK1">—</span><span class="s" id="wK1s"></span></div>
+      <div class="kpi"><span class="k" data-i18n="wk.rank"></span><span class="v" id="wK2">—</span><span class="s" id="wK2s"></span></div>
+      <div class="kpi"><span class="k" data-i18n="wk.change"></span><span class="v" id="wK3">—</span><span class="s" id="wK3s"></span></div>
+      <div class="kpi"><span class="k" data-i18n="wk.world"></span><span class="v" id="wK4">—</span><span class="s" id="wK4s"></span></div>
+    </section>
+    <div class="grid" id="wgrid">
+      <section id="wTrendPanel" class="panel wide">
+        <div class="ph"><h2 data-i18n="wp.trend"></h2><span class="src" data-i18n="w.src"></span><span class="sp"></span>
+          <button class="ghost" type="button" id="wDlSeries" data-i18n="wbtn.csv"></button></div>
+        <div class="chart" id="cWTrend" role="img" data-i18n-aria="wp.trend"></div>
+        <p class="note" id="wUnitNote"></p>
+      </section>
+      <section id="wMapPanel" class="panel wide">
+        <div class="ph"><h2 data-i18n="wp.map"></h2><span class="src" data-i18n="w.src"></span><span class="sp"></span>
+          <button class="ghost" type="button" id="wDlRank" data-i18n="wbtn.csv"></button></div>
+        <div class="mapbox">
+          <div class="map" id="cWMap" role="img" data-i18n-aria="wp.map"></div>
+          <div class="scroll"><table id="tWRank"><thead><tr><th>#</th><th data-i18n="th.country"></th><th class="n" data-i18n="wth.value"></th><th class="n" data-i18n="wth.year"></th></tr></thead><tbody class="click"></tbody></table></div>
+        </div>
+        <p class="note" data-i18n="wp.mapNote"></p>
+      </section>
+      <section id="wAboutPanel" class="panel wide">
+        <div class="ph"><h2 data-i18n="wp.about"></h2></div>
+        <div class="w-about" id="wAbout"></div>
       </section>
     </div>
   </div>

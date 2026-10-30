@@ -245,7 +245,7 @@ async function fetchLive(s, force) {
     oa("/works", { filter: filter + ",countries_distinct_count:>1", per_page: 1, select: "id" }).then(j => j.meta.count).catch(() => null)
   ]);
   return {
-    mode: "live", range: [s.y1, s.y2], selected: s.countries.slice(), main, cmp,
+    mode: "live", range: [s.y1, s.y2], selected: s.countries.slice(), main, cmp, filter,
     total: top.meta ? top.meta.count : years.reduce((a, g) => a + g.count, 0),
     years: years.map(g => [Number(g.key), g.count]).filter(d => d[0]),
     years2: years2 ? years2.map(g => [Number(g.key), g.count]).filter(d => d[0]) : null,
@@ -828,8 +828,8 @@ function renderKPIs() {
   $("kPubs").textContent = fmt(DATA.total);
   $("kPubsS").textContent = `${DATA.range[0]}–${DATA.range[1]}`;
   const hi = hIndex(DATA.works);
-  $("kH").textContent = (hi.capped ? "≥ " : "") + hi.h;
-  $("kHS").textContent = file ? t("k.g", { g: hi.g }) : t("k.hCorpus");
+  if (DATA.hExact != null) { $("kH").textContent = fmt(DATA.hExact); $("kHS").textContent = t("k.hAll"); }
+  else { $("kH").textContent = (hi.capped ? "≥ " : "") + fmt(hi.h); $("kHS").textContent = file ? t("k.g", { g: hi.g }) : hi.capped ? t("k.hWait") : t("k.hCorpus"); }
   $("kCit").textContent = fmt(DATA.works.reduce((a, w) => a + w.cites, 0));
   $("kCitS").textContent = file ? t("k.citFile") : (DATA.total > 200 ? t("k.citTop") : t("k.citAll"));
   const box = $("kRankBox");
@@ -944,9 +944,26 @@ async function run(force) {
     $("updated").textContent = now();
     if (demo) setStatus("demo", t("st.demo"));
     else setStatus("live", t("st.live"));
-    if (!demo) checkBudget();
+    if (!demo) { checkBudget(); refineH(DATA, force); }
   } catch (e) { setStatus("err", e.message); }
   finally { if (my === inflight) { $("go").disabled = false; $("grid").classList.remove("loading"); setProgress(null); pubBusy(false); } }
+}
+/* Exact h-index of the whole corpus: the 200 most cited works only give "≥ 200" for large corpora,
+   so the h-index is found by binary search on OpenAlex counts (h = largest h with at least h works cited ≥ h times). */
+async function refineH(d, force) {
+  if (!d || d.mode !== "live" || !d.filter) return;
+  const c = d.works.map(w => w.cites).sort((a, b) => b - a);
+  if (c.length < 200 || c[199] < 200) return;
+  let lo = 200, hi = Math.min(c[0], d.total || c[0]);
+  try {
+    while (lo < hi) {
+      const mid = Math.floor((lo + hi + 1) / 2);
+      const j = await getJSON(oaURL("/works", { filter: d.filter + ",cited_by_count:>" + (mid - 1), per_page: 1, select: "id" }), force);
+      if (DATA !== d) return;
+      if (((j.meta && j.meta.count) || 0) >= mid) lo = mid; else hi = mid - 1;
+    }
+    d.hExact = lo; if (DATA === d && MODE === "live") renderKPIs();
+  } catch { if (DATA === d) { $("kHS").textContent = t("k.hCorpus"); } }
 }
 async function checkBudget() {
   $("budget").textContent = "";
@@ -1550,6 +1567,241 @@ function analyzePatents(recs, ps) {
 $("pSample").addEventListener("click", () => { PSRC = "sample"; runPat(); });
 $("pLive").addEventListener("click", () => { PSRC = "api"; runPat(); });
 
+/* ======================================================================
+   WORLD BANK TAB (World Bank Open Data API: free, no key)
+   ====================================================================== */
+const WB_API = "https://api.worldbank.org/v2";
+// [group, code, French label, English label]. Any other WDI code can be typed with "Other indicator".
+const WB_IND = [
+  ["rd", "GB.XPD.RSDV.GD.ZS", "Dépenses de R-D (% du PIB)", "R&D expenditure (% of GDP)"],
+  ["rd", "SP.POP.SCIE.RD.P6", "Chercheurs en R-D (par million d'habitants)", "Researchers in R&D (per million people)"],
+  ["rd", "IP.JRN.ARTC.SC", "Articles scientifiques et techniques", "Scientific and technical journal articles"],
+  ["rd", "IP.PAT.RESD", "Demandes de brevets, résidents", "Patent applications, residents"],
+  ["rd", "IP.PAT.NRES", "Demandes de brevets, non-résidents", "Patent applications, nonresidents"],
+  ["rd", "IP.TMK.TOTL", "Demandes d'enregistrement de marques", "Trademark applications, total"],
+  ["rd", "TX.VAL.TECH.MF.ZS", "Exportations de haute technologie (% des exportations manufacturées)", "High-technology exports (% of manufactured exports)"],
+  ["rd", "TX.VAL.TECH.CD", "Exportations de haute technologie ($ US courants)", "High-technology exports (current US$)"],
+  ["rd", "BX.GSR.ROYL.CD", "Redevances de propriété intellectuelle reçues ($ US courants)", "Charges for the use of intellectual property, receipts (current US$)"],
+  ["eco", "NY.GDP.MKTP.CD", "PIB ($ US courants)", "GDP (current US$)"],
+  ["eco", "NY.GDP.PCAP.CD", "PIB par habitant ($ US courants)", "GDP per capita (current US$)"],
+  ["eco", "NY.GDP.MKTP.KD.ZG", "Croissance du PIB (% annuel)", "GDP growth (annual %)"],
+  ["eco", "NE.EXP.GNFS.ZS", "Exportations de biens et services (% du PIB)", "Exports of goods and services (% of GDP)"],
+  ["eco", "BX.KLT.DINV.WD.GD.ZS", "Investissements directs étrangers, entrées nettes (% du PIB)", "Foreign direct investment, net inflows (% of GDP)"],
+  ["eco", "FP.CPI.TOTL.ZG", "Inflation, prix à la consommation (% annuel)", "Inflation, consumer prices (annual %)"],
+  ["soc", "SP.POP.TOTL", "Population totale", "Population, total"],
+  ["soc", "SE.TER.ENRR", "Taux de scolarisation dans le supérieur (% brut)", "School enrollment, tertiary (% gross)"],
+  ["soc", "SE.XPD.TOTL.GD.ZS", "Dépenses publiques d'éducation (% du PIB)", "Government expenditure on education (% of GDP)"],
+  ["soc", "IT.NET.USER.ZS", "Utilisateurs d'Internet (% de la population)", "Individuals using the Internet (% of population)"],
+  ["soc", "SL.UEM.TOTL.ZS", "Chômage (% de la population active)", "Unemployment (% of total labor force)"],
+  ["env", "EG.ELC.ACCS.ZS", "Accès à l'électricité (% de la population)", "Access to electricity (% of population)"],
+  ["env", "EG.FEC.RNEW.ZS", "Énergies renouvelables (% de la consommation finale)", "Renewable energy consumption (% of total final energy)"],
+  ["env", "SH.H2O.SMDW.ZS", "Eau potable gérée en toute sécurité (% de la population)", "People using safely managed drinking water services (% of population)"],
+  ["env", "ER.H2O.FWST.ZS", "Niveau de stress hydrique (% des ressources disponibles)", "Level of water stress (% of available freshwater resources)"]
+];
+let WSEL = ["MA", "CA", "FR", "US"], WDATA = null, winflight = 0, wMapBound = false, wRankBound = false;
+const wbChips = makeChips("wchips", "wcInput", () => WSEL, v => { WSEL = v; });
+function fillWbIndicators() {
+  const sel = $("wind"), cur = sel.value;
+  sel.innerHTML = ["rd", "eco", "soc", "env"].map(g => `<optgroup label="${esc(t("wg." + g))}">` +
+    WB_IND.filter(r => r[0] === g).map(r => `<option value="${r[1]}">${esc(LANG === "fr" ? r[2] : r[3])}</option>`).join("") + "</optgroup>").join("")
+    + `<option value="_other">${esc(t("wf.other"))}</option>`;
+  if (cur) sel.value = cur;
+  $("wcode").hidden = sel.value !== "_other";
+}
+$("wind").addEventListener("change", () => {
+  $("wcode").hidden = $("wind").value !== "_other";
+  if ($("wind").value === "_other") $("wcode").focus(); else runWb();
+});
+const wbLabel = code => { const r = WB_IND.find(x => x[1] === code); return r ? (LANG === "fr" ? r[2] : r[3]) : ""; };
+function wbState() {
+  let y1 = parseInt($("wy1").value, 10) || 2000, y2 = parseInt($("wy2").value, 10) || CUR_YEAR;
+  y2 = Math.min(Math.max(y2, 1960), CUR_YEAR); y1 = Math.min(Math.max(y1, 1960), y2);
+  const code = ($("wind").value === "_other" ? $("wcode").value : $("wind").value).trim().toUpperCase();
+  return { code, countries: WSEL.slice(), y1, y2 };
+}
+/* Direct call to the World Bank; if it fails (network, CORS), the same call goes through the proxy. */
+const WCACHE = new Map();
+async function wbFetch(path, params) {
+  const qs = new URLSearchParams({ format: "json", ...params }).toString();
+  const lp = (LANG === "fr" ? "/fr" : "/en") + path + "?" + qs;
+  const hit = WCACHE.get(lp); if (hit && Date.now() - hit.t < 3600000) return hit.j;
+  const bases = [WB_API]; if (cfg.worker) bases.push(cfg.worker + "/worldbank");
+  let err;
+  for (const b of bases) {
+    try {
+      const r = await fetch(b + lp);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const j = await r.json();
+      if (Array.isArray(j) && j[0] && j[0].message) throw Object.assign(new Error((j[0].message[0] || {}).value || "API"), { bad: true });
+      WCACHE.set(lp, { t: Date.now(), j }); return j;
+    } catch (e) { err = e; if (e.bad) break; }
+  }
+  throw err;
+}
+const COLON = () => LANG === "fr" ? " : " : ": ";
+const fmtV = v => {
+  if (v == null || isNaN(v)) return "—";
+  const a = Math.abs(v);
+  if (a >= 1e6) return new Intl.NumberFormat(LOC(), { notation: "compact", maximumFractionDigits: 2 }).format(v);
+  return Number(v).toLocaleString(LOC(), { maximumFractionDigits: a < 10 ? 2 : a < 1000 ? 1 : 0 });
+};
+async function runWb() {
+  if (MODE !== "wb") return;
+  if ($("wcInput").value.trim()) wbChips.add();
+  const s = wbState();
+  if (!s.code) { setStatus("err", t("wst.needCode")); return; }
+  store.set("wlast", JSON.stringify(s));
+  const my = ++winflight;
+  setStatus("", t("wst.loading")); setProgress(-1);
+  document.querySelectorAll("#wbView .panel").forEach(p => busy(p, t("ld.loading")));
+  try {
+    const ctry = [...s.countries, "WLD"].join(";");
+    const [meta, series, latest] = await Promise.all([
+      wbFetch("/indicator/" + encodeURIComponent(s.code), {}),
+      wbFetch("/country/" + ctry + "/indicator/" + encodeURIComponent(s.code), { date: s.y1 + ":" + s.y2, per_page: "20000" }),
+      wbFetch("/country/all/indicator/" + encodeURIComponent(s.code), { mrnev: "1", per_page: "500" })
+    ]);
+    if (my !== winflight || MODE !== "wb") return;
+    const im = (meta && meta[1] && meta[1][0]) || {};
+    const rows = (series && series[1]) || [], lrows = (latest && latest[1]) || [];
+    const isW = r => r.countryiso3code === "WLD" || (r.country && r.country.id === "1W");
+    const iso = new Set(ISO);
+    const byC = new Map();
+    rows.forEach(r => {
+      if (r.value == null) return;
+      const k = isW(r) ? "WLD" : r.country && r.country.id; if (!k) return;
+      if (!byC.has(k)) byC.set(k, new Map());
+      byC.get(k).set(Number(r.date), Number(r.value));
+    });
+    const world = lrows.find(isW);
+    const ranking = lrows.filter(r => r.value != null && r.country && iso.has(r.country.id))
+      .map(r => [r.country.id, Number(r.value), Number(r.date)]).sort((a, b) => b[1] - a[1]);
+    WDATA = { s, name: im.name || wbLabel(s.code) || s.code, note: im.sourceNote || "", org: im.sourceOrganization || "",
+      source: im.source && im.source.value || "", updated: (series && series[0] && series[0].lastupdated) || "",
+      byC, ranking, world: world && world.value != null ? [Number(world.value), Number(world.date)] : null };
+    renderWb();
+    setStatus("live", t("wst.ok")); $("updated").textContent = now();
+  } catch (e) {
+    if (my !== winflight) return;
+    setStatus("err", e.bad ? t("wst.badCode", { code: s.code }) : t("wst.err", { msg: e.message }));
+  } finally {
+    if (my === winflight) { setProgress(null); document.querySelectorAll("#wbView .panel").forEach(p => busy(p, null)); }
+  }
+}
+function renderWb() {
+  const d = WDATA; if (!d) return;
+  const th = T(), s = d.s, ax = axisCommon(th);
+  const cn = c => c === "WLD" ? t("w.world") : cname(c);
+  $("wscope").innerHTML = `<b>${esc(d.name)}</b> · ${esc(s.countries.length ? s.countries.map(cname).join(", ") : t("wscope.none"))} · ${s.y1}–${s.y2}`;
+  // KPIs: first selected country
+  const c0 = s.countries[0], m0 = c0 && d.byC.get(c0);
+  const yrs0 = m0 ? [...m0.keys()].sort((a, b) => a - b) : [];
+  if (c0 && yrs0.length) {
+    const yl = yrs0[yrs0.length - 1], yf = yrs0[0];
+    $("wK1").textContent = fmtV(m0.get(yl)); $("wK1s").textContent = cname(c0) + " · " + yl;
+    const a = m0.get(yf), b = m0.get(yl);
+    if (yrs0.length > 1 && a > 0 && b >= 0) { const ch = b / a - 1; $("wK3").textContent = (ch > 0 ? "+" : "") + pct(ch); }
+    else $("wK3").textContent = yrs0.length > 1 ? fmtV(b - a) : "—";
+    $("wK3s").textContent = cname(c0) + " · " + yf + " → " + yl;
+  } else { $("wK1").textContent = "—"; $("wK1s").textContent = c0 ? cname(c0) + " · " + t("wst.noData") : t("wk.noCountry"); $("wK3").textContent = "—"; $("wK3s").textContent = ""; }
+  const ri = c0 ? d.ranking.findIndex(r => r[0] === c0) : -1;
+  $("wK2").innerHTML = ri >= 0 ? ordinal(ri + 1) : "—";
+  $("wK2s").textContent = ri >= 0 ? t("wk.rankS", { c: cname(c0), n: fmt(d.ranking.length) }) : (c0 ? cname(c0) : t("wk.noCountry"));
+  $("wK4").textContent = d.world ? fmtV(d.world[0]) : "—"; $("wK4s").textContent = d.world ? t("w.world") + " · " + d.world[1] : "";
+  // Trend
+  const ys = []; for (let y = s.y1; y <= s.y2; y++) ys.push(y);
+  const keys = [...s.countries.filter(c => d.byC.has(c)), ...(d.byC.has("WLD") ? ["WLD"] : [])];
+  if (!keys.length) noChart("cWTrend", t("na.wtrend"));
+  else {
+    const pal = [th.accent, th.ochre, th.accent2, th.good, "#9b5de5", "#e07a5f", "#3d8b8b", "#b08968"];
+    let first = ys.findIndex(y => keys.some(k => d.byC.get(k).has(y))); if (first < 0) first = 0;
+    let last = ys.length - 1; while (last > first && !keys.some(k => d.byC.get(k).has(ys[last]))) last--;
+    const yv = ys.slice(first, last + 1);
+    const c = chart("cWTrend");
+    if (c) c.setOption({
+      animationDuration: 500, color: pal, grid: { left: 8, right: 16, top: 36, bottom: 8, containLabel: true },
+      legend: { top: 0, left: 0, textStyle: { color: th.ink, fontSize: 12 }, icon: "roundRect", itemWidth: 12, itemHeight: 4 },
+      tooltip: { trigger: "axis", ...tip(th), valueFormatter: v => fmtV(v) },
+      xAxis: { type: "category", data: yv, boundaryGap: false, ...ax, splitLine: { show: false } },
+      yAxis: { type: "value", scale: true, ...ax, axisLine: { show: false }, axisLabel: { ...ax.axisLabel, formatter: v => fmtV(v) } },
+      series: keys.map((k, i) => ({ name: cn(k), type: "line", connectNulls: true, symbolSize: 5, showSymbol: yv.length < 30,
+        data: yv.map(y => d.byC.get(k).has(y) ? d.byC.get(k).get(y) : null),
+        ...(k === "WLD" ? { lineStyle: { type: "dashed", width: 1.5, color: th.muted }, itemStyle: { color: th.muted } } : { lineStyle: { width: 2.2 }, itemStyle: { color: pal[i % pal.length] } }) }))
+    }, true);
+  }
+  $("wUnitNote").textContent = d.name + (d.updated ? " · " + t("w.updated") + COLON() + d.updated : "");
+  // Map + ranking
+  const sel = new Set(s.countries), rk = d.ranking, max = rk.length ? Math.max(...rk.map(r => Math.abs(r[1]))) : 1;
+  $("tWRank").tBodies[0].innerHTML = rk.length ? rk.map(([c, v, y], i) => `<tr data-code="${c}" class="${sel.has(c) ? "sel" : ""}"><td class="rank">${i + 1}</td><td>${esc(cname(c))}<div class="bar"><i style="width:${(Math.abs(v) / (max || 1) * 100).toFixed(1)}%;background:var(--accent)"></i></div></td><td class="n">${fmtV(v)}</td><td class="n">${y}</td></tr>`).join("")
+    : `<tr><td colspan="4" class="note">${esc(t("na.wmap"))}</td></tr>`;
+  if (!wRankBound) { wRankBound = true; $("tWRank").tBodies[0].addEventListener("click", e => { const tr = e.target.closest("tr[data-code]"); if (tr) wToggle(tr.dataset.code); }); }
+  const mn = mapName();
+  if (!mn) noChart("cWMap", t("map.noBase"));
+  else if (!rk.length) noChart("cWMap", t("na.wmap"));
+  else {
+    const pos = rk.every(r => r[1] > 0), vals = rk.map(r => r[1]);
+    const useLog = pos && Math.max(...vals) / Math.min(...vals) > 200;
+    const tr = v => useLog ? Math.log10(v) : v;
+    const data = rk.map(([cc, v, y], i) => {
+      const o = { name: geoName(cc), value: tr(v), raw: v, year: y, code: cc, rank: i + 1 };
+      if (sel.has(cc)) o.itemStyle = { borderColor: th.ink, borderWidth: 1.5 };
+      if (cc === "MA" && !sel.has(cc)) o.itemStyle = { borderWidth: 0 };
+      return o;
+    });
+    if (!data.some(o => o.code === "MA")) data.push({ name: "Morocco", value: NaN, code: "MA", raw: null, itemStyle: { borderWidth: 0 } });
+    const tv = data.filter(o => !isNaN(o.value)).map(o => o.value);
+    const c = chart("cWMap");
+    if (c) {
+      c.setOption({
+        tooltip: { trigger: "item", ...tip(th), formatter: p => {
+          const o = p.data; if (!o || !o.code) return esc(p.name);
+          if (o.raw == null) return `<b>${esc(cname(o.code))}</b><br>${esc(t("wst.noData"))}`;
+          return `<b>${esc(cname(o.code))}</b> · ${ordinal(o.rank)}<br>${fmtV(o.raw)} <span style="color:${th.muted}">(${o.year})</span>`;
+        } },
+        visualMap: { min: Math.min(...tv), max: Math.max(...tv), left: 0, bottom: 0, orient: "horizontal", itemWidth: 10, itemHeight: 120, calculable: false,
+          text: [fmtV(useLog ? Math.pow(10, Math.max(...tv)) : Math.max(...tv)), fmtV(useLog ? Math.pow(10, Math.min(...tv)) : Math.min(...tv))],
+          textStyle: { color: th.muted, fontFamily: th.mono, fontSize: 11 }, inRange: { color: [th.soft, th.accent] }, outOfRange: { color: th.line } },
+        series: [{ type: "map", map: mn, roam: true, scaleLimit: { min: 1, max: 8 }, top: 10, bottom: 30,
+          itemStyle: { areaColor: th.line, borderColor: th.surface, borderWidth: 0.6 },
+          emphasis: { label: { show: false }, itemStyle: { areaColor: th.ochre } }, select: { disabled: true }, data }]
+      }, true);
+      if (!wMapBound) { wMapBound = true; c.on("click", p => { const cc = (p.data && p.data.code) || GEO2ISO[p.name]; if (cc) wToggle(unify(cc)); }); }
+    }
+  }
+  // Definition
+  const lines = [];
+  lines.push(`<p><b>${esc(d.name)}</b> <span class="mono">· ${esc(t("w.code"))} ${esc(s.code)}</span></p>`);
+  if (d.note) lines.push(`<p>${esc(d.note)}</p>`);
+  if (d.org || d.source) lines.push(`<p class="note">${esc(t("w.source") + COLON())}${esc([d.org, d.source].filter(Boolean).join(" · "))}</p>`);
+  lines.push(`<p class="note"><a href="https://data.worldbank.org/indicator/${encodeURIComponent(s.code)}" target="_blank" rel="noopener">data.worldbank.org/indicator/${esc(s.code)}</a></p>`);
+  $("wAbout").innerHTML = lines.join("");
+}
+function wToggle(cc) {
+  if (!cc) return;
+  WSEL = WSEL.includes(cc) ? WSEL.filter(x => x !== cc) : [...WSEL, cc];
+  wbChips.draw(); runWb();
+}
+async function saveCSV(filename, text) {
+  const data = "﻿" + text;
+  if (dlNS) { try { await dlNS.save({ filename, data: new Blob([data], { type: "text/csv" }) }); } catch {} return; }
+  try {
+    const blob = new Blob([data], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  } catch {}
+}
+$("wDlSeries").addEventListener("click", () => {
+  if (!WDATA) return; const d = WDATA, out = [["indicator", "code", "country_code", "country", "year", "value"]];
+  d.byC.forEach((m, c) => [...m.entries()].sort((a, b) => a[0] - b[0]).forEach(([y, v]) => out.push([d.name, d.s.code, c, c === "WLD" ? t("w.world") : cname(c), y, v])));
+  saveCSV("worldbank_" + d.s.code + "_" + d.s.y1 + "-" + d.s.y2 + ".csv", csv(out));
+});
+$("wDlRank").addEventListener("click", () => {
+  if (!WDATA) return; const d = WDATA;
+  saveCSV("worldbank_" + d.s.code + "_latest.csv", csv([["rank", "country_code", "country", "value", "year", "indicator"], ...d.ranking.map(([c, v, y], i) => [i + 1, c, cname(c), v, y, d.name])]));
+});
+$("wform").addEventListener("submit", e => { e.preventDefault(); runWb(); });
+$("tabWb").addEventListener("click", () => setMode("wb"));
+
 /* ---------- tabs ---------- */
 function setMode(m) {
   MODE = m;
@@ -1557,14 +1809,15 @@ function setMode(m) {
   $("tabPat").setAttribute("aria-selected", String(m === "pat"));
   $("tabFile").setAttribute("aria-selected", String(m === "file"));
   $("tabAbout").setAttribute("aria-selected", String(m === "about"));
-  $("liveControls").hidden = m !== "live"; $("patControls").hidden = m !== "pat"; $("importer").hidden = m !== "file";
-  $("autoBox").hidden = m === "file"; $("statusBar").hidden = m === "about";
+  $("tabWb").setAttribute("aria-selected", String(m === "wb"));
+  $("liveControls").hidden = m !== "live"; $("patControls").hidden = m !== "pat"; $("importer").hidden = m !== "file"; $("wbControls").hidden = m !== "wb";
+  $("autoBox").hidden = m === "file" || m === "wb"; $("statusBar").hidden = m === "about";
   const isCustom = m.startsWith("custom:"), cid = isCustom ? m.slice(7) : "";
   document.querySelectorAll("#tabs [data-custom]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.custom === cid)));
   if (isCustom) { $("liveControls").hidden = true; $("autoBox").hidden = true; $("statusBar").hidden = true; }
-  $("pubView").hidden = m === "pat" || m === "about" || isCustom; $("patView").hidden = m !== "pat"; $("aboutView").hidden = m !== "about"; $("customView").hidden = !isCustom;
+  $("pubView").hidden = m === "pat" || m === "about" || m === "wb" || isCustom; $("patView").hidden = m !== "pat"; $("wbView").hidden = m !== "wb"; $("aboutView").hidden = m !== "about"; $("customView").hidden = !isCustom;
   try {
-    const want = m === "about" ? "#about" : isCustom ? "#" + cid : "";
+    const want = m === "about" ? "#about" : m === "wb" ? "#worldbank" : isCustom ? "#" + cid : "";
     if (want && location.hash !== want) location.hash = want.slice(1);
     else if (!want && location.hash && location.hash !== "#") history.replaceState(null, "", location.pathname + location.search);
   } catch {}
@@ -1575,6 +1828,7 @@ function setMode(m) {
   Object.values(charts).forEach(c => c.resize());
   if (m === "live") run();
   else if (m === "pat") { inflight++; $("go").disabled = false; $("grid").classList.remove("loading"); runPat(); }
+  else if (m === "wb") { inflight++; pinflight++; $("go").disabled = false; $("pgo").disabled = false; $("grid").classList.remove("loading"); runWb(); }
   else {
     inflight++; pinflight++; $("go").disabled = false; $("pgo").disabled = false; $("grid").classList.remove("loading");
     if (FILES.length) { DATA = dataFromMerge(MERGE || runMerge()); PAT = null; renderFileBanner(); renderAll(); setStatus("live", t("st.fileLoaded")); }
@@ -1588,6 +1842,7 @@ $("tabAbout").addEventListener("click", () => setMode("about"));
 window.addEventListener("hashchange", () => {
   const h = location.hash.slice(1);
   if (h === "about" && MODE !== "about") setMode("about");
+  else if (h === "worldbank" && MODE !== "wb") setMode("wb");
   else if (h && CUSTOM.some(x => x.id === h) && MODE !== "custom:" + h) setMode("custom:" + h);
 });
 function renderAbout() {
@@ -1612,7 +1867,7 @@ let SITE = null;
 const CUSTOM = [];   // added tabs: { id, title: {fr, en}, file }
 const MARKED_URL = "https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js";
 const pickLang = v => v == null ? "" : typeof v === "string" ? v : (v[LANG] || v.fr || v.en || "");
-const BUILTIN_TABS = { live: "tabLive", patents: "tabPat", import: "tabFile", about: "tabAbout" };
+const BUILTIN_TABS = { live: "tabLive", patents: "tabPat", worldbank: "tabWb", import: "tabFile", about: "tabAbout" };
 async function renderFileInto(el, file, stillWanted) {
   el.innerHTML = `<p class="note">${esc(t("ld.loading"))}</p>`;
   try {
@@ -1651,6 +1906,7 @@ async function loadSite() {
   try { j = JSON.parse(await r.text()); }
   catch (e) { $("siteBanner").innerHTML = t("site.err", { msg: esc(e.message) }); $("siteBanner").hidden = false; return; }
   SITE = j;
+  if (j.colors || j.darkColors) applyColors(j.colors, j.darkColors);
   if (j.about) SITE_CONFIG.about = { ...(SITE_CONFIG.about || {}), ...j.about };
   if (j.texts) ["fr", "en"].forEach(l => Object.assign(I18N[l], (j.texts && j.texts[l]) || {}));
   (j.hideTabs || []).forEach(name => { const b = $(BUILTIN_TABS[name]); if (b) b.hidden = true; });
@@ -1658,7 +1914,7 @@ async function loadSite() {
   (j.tabs || []).forEach(tab => {
     if (!tab || !tab.id || !tab.file) return;
     const id = String(tab.id).toLowerCase().replace(/[^a-z0-9-]/g, "-");
-    if (CUSTOM.some(x => x.id === id) || ["about", "settings", "sidebar", "customize", "upgrade", "downloads"].includes(id)) return;
+    if (CUSTOM.some(x => x.id === id) || ["about", "worldbank", "settings", "sidebar", "customize", "upgrade", "downloads"].includes(id)) return;
     CUSTOM.push({ id, title: tab.title || id, file: tab.file });
     const b = document.createElement("button");
     b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", "false"); b.dataset.custom = id;
@@ -1672,7 +1928,7 @@ async function loadSite() {
   if (h && CUSTOM.some(x => x.id === h)) setMode("custom:" + h);
   else if (MODE === "about") renderAbout();
   else {
-    const cur = { live: "tabLive", pat: "tabPat", file: "tabFile" }[MODE];
+    const cur = { live: "tabLive", pat: "tabPat", wb: "tabWb", file: "tabFile" }[MODE];
     if (cur && $(cur).hidden) {
       const first = [...document.querySelectorAll("#tabs button")].find(x => !x.hidden);
       if (first) first.click();
@@ -1684,6 +1940,35 @@ const drop = $("drop");
 ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
 ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
 drop.addEventListener("drop", e => addFiles([...e.dataTransfer.files]));
+
+/* ---------- site colors (site.json "colors" and "darkColors") ---------- */
+const COLOR_KEYS = ["main", "second", "background", "panels", "text"];
+const COLOR_DEFAULT = { main: "#1C6E8C", second: "#B4741C", background: "#F2F5F6", panels: "#FFFFFF", text: "#13222B" };
+const DARK_DEFAULT = { background: "#0D161B", panels: "#14212A", text: "#E2EBEE" };
+const isHex = v => typeof v === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v.trim());
+const hex6 = v => { v = v.trim(); return (v.length === 4 ? "#" + [...v.slice(1)].map(x => x + x).join("") : v).toUpperCase(); };
+const rgbOf = h => [1, 3, 5].map(i => parseInt(hex6(h).slice(i, i + 2), 16));
+/* mix(a, b, w): w = share of color b (0..1) */
+const mix = (a, b, w) => "#" + rgbOf(a).map((x, i) => Math.round(x * (1 - w) + rgbOf(b)[i] * w).toString(16).padStart(2, "0")).join("").toUpperCase();
+const pickColors = (o, base) => { const r = { ...base }; Object.keys(o || {}).forEach(k => { if (COLOR_KEYS.includes(k) && isHex(o[k])) r[k] = hex6(o[k]); }); return r; };
+function colorVars(c, dark) {
+  const v = dark
+    ? { paper: c.background, surface: c.panels, ink: c.text, muted: mix(c.text, c.background, .4), line: mix(c.text, c.background, .85),
+        accent: c.main, "accent-2": mix(c.main, "#FFFFFF", .4), "accent-soft": mix(c.main, c.panels, .75), ochre: c.second, "ochre-soft": mix(c.second, c.panels, .75) }
+    : { paper: c.background, surface: c.panels, ink: c.text, muted: mix(c.text, c.background, .45), line: mix(c.text, c.background, .85),
+        accent: c.main, "accent-2": mix(c.main, "#000000", .35), "accent-soft": mix(c.main, "#FFFFFF", .82), ochre: c.second, "ochre-soft": mix(c.second, "#FFFFFF", .75) };
+  return Object.entries(v).map(([k, x]) => `--${k}:${x}`).join(";");
+}
+function applyColors(light, dark) {
+  const L = pickColors(light, COLOR_DEFAULT);
+  const D = pickColors(dark, { ...DARK_DEFAULT, main: mix(L.main, "#FFFFFF", .35), second: mix(L.second, "#FFFFFF", .25) });
+  let el = $("siteColors");
+  if (!el) { el = document.createElement("style"); el.id = "siteColors"; document.head.appendChild(el); }
+  const dv = colorVars(D, true);
+  el.textContent = `:root{${colorVars(L, false)}}\n@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){${dv};color-scheme:dark}}\n:root[data-theme="dark"]{${dv};color-scheme:dark}`;
+  try { rerender(); } catch {}
+  return L;
+}
 
 /* ---------- CSV copy ---------- */
 function csv(rows) { return rows.map(r => r.map(v => { const s = String(v ?? ""); return /[",;\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(",")).join("\n"); }
@@ -1730,10 +2015,11 @@ $("auto").addEventListener("change", setAuto);
 function setLang(l) {
   if (l === LANG) return;
   LANG = l; store.set("lang", l); nf = new Intl.NumberFormat(LOC());
-  applyStatic(); fillDatalists(); pubChips.draw(); patChips.draw();
+  applyStatic(); fillDatalists(); fillWbIndicators(); pubChips.draw(); patChips.draw(); wbChips.draw();
   if ($("c2").value.trim()) { const c = resolveCountryInput($("c2").value); if (c) $("c2").value = cname(c); }
   if (MODE === "live") run();
   else if (MODE === "pat") runPat();
+  else if (MODE === "wb") runWb();
   else if (MODE === "about") renderAbout();
   else if (MODE.startsWith("custom:")) renderCustom(MODE.slice(7));
   else if (FILES.length) refreshFiles();
@@ -1742,7 +2028,7 @@ function setLang(l) {
 document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
 
 /* ---------- theme ---------- */
-const rerender = () => { Object.values(charts).forEach(c => c.clear()); renderAll(); if (PDATA) renderPat(); };
+const rerender = () => { Object.values(charts).forEach(c => c.clear()); renderAll(); if (PDATA) renderPat(); if (WDATA) renderWb(); };
 try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender); } catch {}
 new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
@@ -1764,9 +2050,18 @@ try {
   if (pl && typeof pl === "object") { $("pq").value = pl.q || ""; $("pap").value = pl.applicant || ""; $("pcls").value = (pl.codes || []).join(", "); $("pclsType").value = pl.clsType === "ipc" ? "ipc" : "cpc"; $("py1").value = pl.y1 || 2005; PSEL = (pl.countries || []).filter(c => ISO.includes(c)); }
   else $("pq").value = "";
 } catch {}
-pubChips.draw(); patChips.draw();
+try {
+  const wl = JSON.parse(store.get("wlast", "null"));
+  if (wl && typeof wl === "object") {
+    if (Array.isArray(wl.countries)) WSEL = wl.countries.filter(c => ISO.includes(c));
+    if (wl.y1) $("wy1").value = wl.y1;
+    if (wl.code) { fillWbIndicators(); if (WB_IND.some(r => r[1] === wl.code)) $("wind").value = wl.code; else { $("wind").value = "_other"; $("wcode").value = wl.code; } }
+  }
+} catch {}
+fillWbIndicators(); $("wy2").value = CUR_YEAR;
+pubChips.draw(); patChips.draw(); wbChips.draw();
 $("qform").addEventListener("submit", e => { e.preventDefault(); run(); });
 setAuto();
-if (location.hash === "#about") setMode("about"); else run();
+if (location.hash === "#about") setMode("about"); else if (location.hash === "#worldbank") setMode("wb"); else run();
 loadSite();
 })();
