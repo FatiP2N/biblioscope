@@ -1,48 +1,9 @@
-# Données économiques
+# Recherche, innovation et ODD
 
 Statistiques sur la recherche, l'innovation et les objectifs de développement durable, pour mettre en contexte les résultats bibliométriques et brevets. Pays affichés : Maroc, Canada, France et États-Unis. Tous les graphiques se mettent à jour automatiquement.
 
-> Pour comparer d'autres pays ou n'importe quel autre indicateur, utilisez l'onglet [Banque mondiale](#worldbank).
+> Pour comparer d'autres pays ou n'importe quel autre indicateur, utilisez l'onglet [Données économiques](#worldbank).
 
-## Recherche et innovation : statistiques de la Banque mondiale
-
-Source : [Banque mondiale](https://donnees.banquemondiale.org) (World Development Indicators ; données R-D de l'Institut de statistique de l'UNESCO, brevets de l'OMPI).
-
-### Dépenses de recherche et développement (% du PIB)
-
-<iframe src="https://data.worldbank.org/share/widget?indicators=GB.XPD.RSDV.GD.ZS&locations=MA-CA-FR-US" width="100%" height="420" frameborder="0" scrolling="no" loading="lazy" title="Dépenses de recherche et développement (% du PIB)"></iframe>
-
-### Chercheurs en R-D (par million d'habitants)
-
-<iframe src="https://data.worldbank.org/share/widget?indicators=SP.POP.SCIE.RD.P6&locations=MA-CA-FR-US" width="100%" height="420" frameborder="0" scrolling="no" loading="lazy" title="Chercheurs en R-D (par million d'habitants)"></iframe>
-
-### Techniciens en R-D (par million d'habitants)
-
-<iframe src="https://data.worldbank.org/share/widget?indicators=SP.POP.TECH.RD.P6&locations=MA-CA-FR-US" width="100%" height="420" frameborder="0" scrolling="no" loading="lazy" title="Techniciens en R-D (par million d'habitants)"></iframe>
-
-### Articles scientifiques et techniques
-
-<iframe src="https://data.worldbank.org/share/widget?indicators=IP.JRN.ARTC.SC&locations=MA-CA-FR-US" width="100%" height="420" frameborder="0" scrolling="no" loading="lazy" title="Articles scientifiques et techniques"></iframe>
-
-### Demandes de brevets, résidents
-
-<iframe src="https://data.worldbank.org/share/widget?indicators=IP.PAT.RESD&locations=MA-CA-FR-US" width="100%" height="420" frameborder="0" scrolling="no" loading="lazy" title="Demandes de brevets, résidents"></iframe>
-
-### Demandes de brevets, non-résidents
-
-<iframe src="https://data.worldbank.org/share/widget?indicators=IP.PAT.NRES&locations=MA-CA-FR-US" width="100%" height="420" frameborder="0" scrolling="no" loading="lazy" title="Demandes de brevets, non-résidents"></iframe>
-
-### Exportations de haute technologie (% des exportations manufacturées)
-
-<iframe src="https://data.worldbank.org/share/widget?indicators=TX.VAL.TECH.MF.ZS&locations=MA-CA-FR-US" width="100%" height="420" frameborder="0" scrolling="no" loading="lazy" title="Exportations de haute technologie (% des exportations manufacturées)"></iframe>
-
-### Redevances de propriété intellectuelle reçues ($ US courants)
-
-<iframe src="https://data.worldbank.org/share/widget?indicators=BX.GSR.ROYL.CD&locations=MA-CA-FR-US" width="100%" height="420" frameborder="0" scrolling="no" loading="lazy" title="Redevances de propriété intellectuelle reçues ($ US courants)"></iframe>
-
-### Taux de scolarisation dans le supérieur (% brut)
-
-<iframe src="https://data.worldbank.org/share/widget?indicators=SE.TER.ENRR&locations=MA-CA-FR-US" width="100%" height="420" frameborder="0" scrolling="no" loading="lazy" title="Taux de scolarisation dans le supérieur (% brut)"></iframe>
 
 ## Objectifs de développement durable et recherche
 
