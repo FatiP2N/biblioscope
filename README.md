@@ -26,7 +26,7 @@ Visitor ──► GitHub Pages (index.html, static)
   partner countries and international collaboration rate.
 - Compare two topics or two countries (e.g. Canada vs France).
 - Annual output, world map and ranking, top institutions, research fields, journals, open access status,
-  most cited publications, h-index.
+  most cited publications, exact h-index of the whole corpus (computed from OpenAlex citation counts).
 - Networks in the spirit of VOSviewer: keyword co-occurrence, co-authorship between countries, authors
   and institutions.
 
@@ -38,6 +38,12 @@ Visitor ──► GitHub Pages (index.html, static)
   inventors, applicant countries) and latest published patents.
 - Data loads progressively, with a progress bar and a loading indicator on each chart.
 - A real Espacenet sample is included (100 patent families on seawater desalination, CPC C02F2103/08).
+
+**World Bank (World Development Indicators, live)**
+- Around 25 ready-made indicators (R&D spending, researchers, patents, scientific articles, high-technology exports,
+  GDP, education, energy, water…), or any World Bank indicator code.
+- Trend by country with the world value, world map and ranking on each country's latest value, official definition,
+  CSV downloads. Free API, no key; if the direct call fails, it goes through the Worker.
 
 **Import and merge (Web of Science, Scopus, Publish or Perish)**
 - Drop one or more exports: Web of Science (tab-delimited, plain text or Excel), Scopus (CSV),
@@ -53,7 +59,8 @@ Visitor ──► GitHub Pages (index.html, static)
 ## Customization (no code)
 
 The site reads two things from the repository at load time:
-- **`site.json`**: added tabs, author and contact on the About page, default language, hidden tabs and text overrides.
+- **`site.json`**: added tabs, author and contact on the About page, default language, hidden tabs
+  (`live`, `patents`, `worldbank`, `import`, `about`), text overrides and site colors (`colors`, `darkColors`).
 - **`pages/`**: one Markdown (or HTML) file per added tab. Embed codes (YouTube, Google Forms, maps, Flourish,
   Datawrapper…) can be pasted directly into these pages.
 
@@ -65,6 +72,7 @@ See [EDITING.md](EDITING.md) for a step-by-step guide.
 |---|---|---|
 | [OpenAlex](https://openalex.org) | 300M+ scholarly works (CC0) | Free API key, $1/day of free usage |
 | [EPO Open Patent Services](https://www.epo.org/en/searching-for-patents/data/web-services/ops) | Worldwide patent data (Espacenet / DOCDB) | Free account, approved by the EPO |
+| [World Bank Open Data](https://data.worldbank.org) | World Development Indicators | Free API, no key |
 | [The Lens](https://www.lens.org) | Patents and scholarly works | Optional; API access on request |
 | Web of Science, Scopus, Publish or Perish | Publications and citations | Through your own exports |
 
@@ -110,6 +118,7 @@ const SITE_CONFIG = {
 | `GET /health` | Shows which keys are configured |
 | `GET /test-epo` | Checks the EPO keys and query syntax |
 | `GET /openalex/...` | Relays OpenAlex requests with the stored key (cached 1 h) |
+| `GET /worldbank/...` | Relays World Bank API requests (fallback, cached 6 h) |
 | `GET /patents?...` | Patent counts and records. Parameters: `q`, `cls` + `clsType` (cpc/ipc), `applicant`, `juris`, `from`, `to`, `part` (years, offices, total, sample), `offices`, `max` |
 
 ## Notes and limits

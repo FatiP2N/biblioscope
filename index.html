@@ -45,7 +45,7 @@ button,input,select{font:inherit;color:inherit}
 .brand{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .brand h1{font-family:var(--f-display);font-weight:700;font-size:1.6rem;margin:0;letter-spacing:-.01em}
 .brand h1 span{color:var(--accent)}
-.tabs{display:flex;gap:2px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:2px}
+.tabs{display:flex;flex-wrap:wrap;max-width:100%;min-width:0;gap:2px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:2px}
 .tabs button{background:none;border:0;border-radius:4px;padding:5px 12px;cursor:pointer;font-size:.85rem;color:var(--muted)}
 .tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 0 0 1px var(--line)}
 .brand .spacer{flex:1}
@@ -75,8 +75,11 @@ form.query{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1.7fr) au
 .chip{display:inline-flex;align-items:center;gap:4px;background:var(--ochre-soft);color:var(--ink);border:1px solid var(--ochre);border-radius:999px;padding:1px 4px 1px 9px;font-size:.8rem;white-space:nowrap}
 .chip button{background:none;border:0;cursor:pointer;color:var(--ochre);font-size:1rem;line-height:1;padding:0 3px}
 form.query.pq{grid-template-columns:minmax(0,1.5fr) minmax(0,1.4fr) minmax(0,1.4fr) auto auto}
+form.query.wq{grid-template-columns:minmax(0,1.6fr) minmax(0,1.6fr) auto auto}
+form.query.wq select,form.query.wq #wcode{width:100%}
+#wcode{margin-top:6px}
 .clsrow{display:flex;gap:4px}.clsrow select{width:auto;flex:none}
-@media (max-width:980px){form.query,form.query.pq{grid-template-columns:1fr 1fr}.field.q,.field.c{grid-column:1/-1}.go{grid-column:1/-1}
+@media (max-width:980px){form.query,form.query.pq,form.query.wq{grid-template-columns:1fr 1fr}.field.q,.field.c{grid-column:1/-1}.go{grid-column:1/-1}
   .compare{grid-template-columns:1fr 1fr}.compare .lbl,.compare .note{grid-column:1/-1}}
 
 .status{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;font-size:.8rem;color:var(--muted)}
@@ -234,6 +237,9 @@ footer p{max-width:90ch;margin:.3em 0}
 .banner .go{margin-left:6px;padding:4px 12px;font-size:.85rem}
 .banner .note{display:inline}
 .kpis.k5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.kpis.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:640px){.kpis.k4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.w-about{font-size:13.5px;line-height:1.55;color:var(--ink)}.w-about p{margin:0 0 8px;max-width:90ch}.w-about .mono{font-size:12px}
 @media (max-width:900px){.kpis.k5{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:480px){.kpis.k5{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* Loading indicators */
@@ -272,6 +278,7 @@ footer p{max-width:90ch;margin:.3em 0}
       <div class="tabs" id="tabs" role="tablist" data-i18n-aria="aria.tabs">
         <button type="button" role="tab" id="tabLive" aria-selected="true" data-i18n="tab.live"></button>
         <button type="button" role="tab" id="tabPat" aria-selected="false" data-i18n="tab.pat"></button>
+        <button type="button" role="tab" id="tabWb" aria-selected="false" data-i18n="tab.wb"></button>
         <button type="button" role="tab" id="tabFile" aria-selected="false" data-i18n="tab.file"></button>
         <button type="button" role="tab" id="tabAbout" aria-selected="false" data-i18n="tab.about"></button>
       </div>
@@ -350,6 +357,25 @@ footer p{max-width:90ch;margin:.3em 0}
         <button class="ghost" type="button" id="pSample" data-i18n="pimp.sample"></button>
         <button class="ghost" type="button" id="pLive" hidden data-i18n="pimp.live"></button>
       </div>
+    </div>
+
+    <div id="wbControls" hidden>
+      <form class="query wq" id="wform" autocomplete="off">
+        <div class="field q">
+          <label for="wind" data-i18n="wf.indicator"></label>
+          <select id="wind"></select>
+          <input id="wcode" hidden data-i18n-ph="ph.wcode" data-i18n-aria="wf.code">
+        </div>
+        <div class="field c">
+          <label for="wcInput" data-i18n="wf.countries"></label>
+          <div class="chips" id="wchips"><input id="wcInput" list="countryList" data-i18n-ph="ph.country"></div>
+        </div>
+        <div class="field">
+          <label for="wy1" data-i18n="wf.years"></label>
+          <div class="years"><input id="wy1" type="number" min="1960" max="2100" value="2000" data-i18n-aria="aria.y1"><span>–</span><input id="wy2" type="number" min="1960" max="2100" data-i18n-aria="aria.y2"></div>
+        </div>
+        <button class="go" id="wgo" type="submit" data-i18n="btn.analyze"></button>
+      </form>
     </div>
 
     <section class="importer" id="importer" hidden>
@@ -601,6 +627,36 @@ footer p{max-width:90ch;margin:.3em 0}
       </section>
     </div>
   </div>
+  <div id="wbView" hidden>
+    <p class="scope" id="wscope"></p>
+    <section class="kpis k4" data-i18n-aria="tab.wb">
+      <div class="kpi"><span class="k" id="wK1k" data-i18n="wk.latest"></span><span class="v" id="wK1">—</span><span class="s" id="wK1s"></span></div>
+      <div class="kpi"><span class="k" data-i18n="wk.rank"></span><span class="v" id="wK2">—</span><span class="s" id="wK2s"></span></div>
+      <div class="kpi"><span class="k" data-i18n="wk.change"></span><span class="v" id="wK3">—</span><span class="s" id="wK3s"></span></div>
+      <div class="kpi"><span class="k" data-i18n="wk.world"></span><span class="v" id="wK4">—</span><span class="s" id="wK4s"></span></div>
+    </section>
+    <div class="grid" id="wgrid">
+      <section id="wTrendPanel" class="panel wide">
+        <div class="ph"><h2 data-i18n="wp.trend"></h2><span class="src" data-i18n="w.src"></span><span class="sp"></span>
+          <button class="ghost" type="button" id="wDlSeries" data-i18n="wbtn.csv"></button></div>
+        <div class="chart" id="cWTrend" role="img" data-i18n-aria="wp.trend"></div>
+        <p class="note" id="wUnitNote"></p>
+      </section>
+      <section id="wMapPanel" class="panel wide">
+        <div class="ph"><h2 data-i18n="wp.map"></h2><span class="src" data-i18n="w.src"></span><span class="sp"></span>
+          <button class="ghost" type="button" id="wDlRank" data-i18n="wbtn.csv"></button></div>
+        <div class="mapbox">
+          <div class="map" id="cWMap" role="img" data-i18n-aria="wp.map"></div>
+          <div class="scroll"><table id="tWRank"><thead><tr><th>#</th><th data-i18n="th.country"></th><th class="n" data-i18n="wth.value"></th><th class="n" data-i18n="wth.year"></th></tr></thead><tbody class="click"></tbody></table></div>
+        </div>
+        <p class="note" data-i18n="wp.mapNote"></p>
+      </section>
+      <section id="wAboutPanel" class="panel wide">
+        <div class="ph"><h2 data-i18n="wp.about"></h2></div>
+        <div class="w-about" id="wAbout"></div>
+      </section>
+    </div>
+  </div>
   <div id="aboutView" hidden>
     <article class="about">
       <h2 data-i18n="about.title"></h2>
@@ -666,7 +722,7 @@ fr: {
   "setup.list": "<ol><li>Créer un compte développeur sur developers.epo.org (validation manuelle par l'OEB), puis une application pour obtenir la <i>Consumer Key</i> et le <i>Consumer Secret</i>.</li><li>Créer un Worker sur Cloudflare (offre gratuite), y coller <code>worker.js</code>, puis ajouter les secrets <code>EPO_KEY</code> et <code>EPO_SECRET</code> (et <code>LENS_TOKEN</code> si vous obtenez un accès Lens).</li><li>Coller l'URL du Worker dans « Sources &amp; clés API » (ou dans <code>SITE_CONFIG</code> pour tous les visiteurs).</li></ol>",
   "setup.note": "L'OEB donne les comptages par année, par office et par code CPC/CIB. Lens.org ajoute les pays des déposants, les déposants, le statut juridique et les brevets les plus cités.",
   "k.pubs": "Publications", "k.h": "Indice h", "k.cit": "Citations", "k.oa": "Accès ouvert", "k.oaS": "part des publications", "k.pat": "Brevets ›",
-  "k.hCorpus": "du corpus", "k.g": "indice g : {g}", "k.citTop": "des 200 plus citées", "k.citAll": "total du corpus", "k.citFile": "total des fichiers",
+  "k.hCorpus": "du corpus", "k.hAll": "sur tout le corpus", "k.hWait": "calcul exact en cours…", "k.g": "indice g : {g}", "k.citTop": "des 200 plus citées", "k.citAll": "total du corpus", "k.citFile": "total des fichiers",
   "k.rank": "Rang mondial", "k.rankShare": "{p} des publications mondiales", "k.rankOf": "sur {n} pays", "k.worldShare": "Part mondiale",
   "k.worldShareS": "des pays sélectionnés réunis", "k.countries": "Pays", "k.countriesS": "avec au moins 1 auteur", "k.noAffil": "affiliations absentes",
   "k.patNone": "exemple dans l'onglet Brevets", "k.patSee": "voir l'onglet Brevets", "k.patSrc": "{src} · détails dans l'onglet", "k.patDemo": "exemple fictif",
@@ -745,7 +801,16 @@ fr: {
   "off.EP": "OEB (EP)", "off.WO": "OMPI (PCT)", "off.EA": "Eurasie (EA)", "off.AP": "ARIPO (AP)", "off.OA": "OAPI (OA)", "off.GC": "Golfe (GC)",
   "ex.inst": "Exemple : institution {x}", "ex.journal": "Exemple : revue {x}", "ex.title": "Exemple de publication n° {n} (titre fictif)",
   "ex.author": "Auteur {x}.", "ex.journal1": "Revue d'exemple", "ex.applicant": "Exemple : déposant {x}", "ex.patent": "Exemple de brevet n° {n} (titre fictif)",
-  "tab.about": "À propos", "custom.err": "Impossible d'afficher {file} : {msg}. Vérifiez le nom du fichier dans site.json et sa présence dans le dépôt.",
+  "tab.about": "À propos", "tab.wb": "Banque mondiale", "wf.indicator": "Indicateur", "wf.countries": "Pays à comparer", "wf.code": "Code de l'indicateur", "wf.years": "Période", "wf.other": "Autre indicateur (code de la Banque mondiale)…",
+  "ph.wcode": "code, ex. SP.POP.TOTL", "wg.rd": "Recherche et innovation", "wg.eco": "Économie", "wg.soc": "Éducation et société", "wg.env": "Énergie, eau et environnement",
+  "wk.latest": "Valeur la plus récente", "wk.rank": "Rang mondial", "wk.change": "Évolution sur la période", "wk.world": "Valeur mondiale", "wk.rankS": "{c} · sur {n} pays", "wk.noCountry": "choisissez un pays",
+  "wp.trend": "Évolution par pays", "wp.map": "Carte mondiale (dernière valeur disponible)", "wp.about": "À propos de cet indicateur", "wth.value": "Valeur", "wth.year": "Année",
+  "wp.mapNote": "Cliquez un pays sur la carte ou dans le tableau pour l'ajouter à la comparaison ou l'en retirer. Les agrégats régionaux sont exclus du classement.",
+  "wbtn.csv": "Télécharger CSV", "w.src": "Banque mondiale · WDI", "w.world": "Monde", "w.code": "Code", "w.source": "Source", "w.updated": "Dernière mise à jour de la Banque mondiale",
+  "wst.loading": "Interrogation de la Banque mondiale…", "wst.ok": "Données de la Banque mondiale chargées", "wst.err": "La Banque mondiale ne répond pas ({msg}). Réessayez dans un instant.",
+  "wst.badCode": "Indicateur introuvable à la Banque mondiale : {code}", "wst.noData": "Aucune donnée pour cette sélection.", "wst.needCode": "Saisissez le code d'un indicateur de la Banque mondiale.",
+  "na.wtrend": "Pas de données pour ces pays sur cette période.", "na.wmap": "Pas de données par pays pour cet indicateur.", "wscope.none": "monde",
+  "custom.err": "Impossible d'afficher {file} : {msg}. Vérifiez le nom du fichier dans site.json et sa présence dans le dépôt.",
   "site.err": "<strong>site.json contient une erreur</strong> et n'a pas été appliqué : {msg}. Vérifiez les guillemets, les virgules et les accolades (outil gratuit : jsonlint.com).", "ld.loading": "chargement…", "ld.offices": "offices {a} / {b}", "ld.sample": "notices…", "ld.noSample": "échantillon indisponible",
   "pp.zeroOffices": "{n} offices interrogés sans résultat sur {m} ne sont pas affichés.", "pp.zeroKw": "Le mot-clé est cherché dans les titres et résumés en anglais : les offices qui publient seulement dans leur langue en ont peu ou pas.", "src.sample": "Échantillon Espacenet", "unit.sample": "familles de brevets (échantillon Espacenet)", "unit.epo": "publications de brevets (documents, pas des familles)",
   "pk.distinctApp": "Déposants distincts", "pk.inSample": "dans l'échantillon de {n} familles", "pk.ctrySample": "pays des déposants · échantillon de {n} familles",
@@ -794,6 +859,7 @@ fr: {
   "about.body": "<section id=\"ab-start\"><h3>Démarrer en trois étapes</h3><ol><li>Choisissez un onglet : <b>Recherche en direct</b> (publications OpenAlex), <b>Brevets</b> ou <b>Importer et fusionner</b> (vos exports Web of Science, Scopus, Publish or Perish).</li><li>Saisissez vos critères : un sujet, un ou plusieurs pays, une période, puis <b>Analyser</b>.</li><li>Lisez les indicateurs, la carte, le classement et les réseaux ; copiez les tableaux en CSV pour vos rapports.</li></ol></section>"
    + "<section id=\"ab-live\"><h3>Recherche en direct</h3><p>Les publications viennent d'<b>OpenAlex</b>, une base ouverte de plus de 300 millions de documents. Le sujet est cherché dans les titres et les résumés ; laissez-le vide pour analyser toute la production d'un pays.</p><ul><li><b>Pays</b> : ajoutez un ou plusieurs pays. Un seul pays affiche son <b>rang mondial</b> et sa part de la production mondiale ; le panneau carte bascule entre le classement mondial et les <b>pays partenaires</b> (co-publications).</li><li><b>Comparer avec</b> : un second sujet ou un second pays, tracé sur la courbe annuelle.</li><li><b>Carte</b> : cliquez un pays (ou une ligne du classement) pour ouvrir son profil.</li><li><b>Actualisation automatique</b> : relance l'analyse toutes les 5, 15 ou 60 minutes.</li></ul></section>"
    + "<section id=\"ab-pat\"><h3>Brevets</h3><p>Filtrez par mots-clés, par code <b>CPC</b> ou <b>CIB/IPC</b> (par exemple <code>H10K</code> ou <code>Y02E10/549</code>, plusieurs codes séparés par des virgules), par <b>déposant</b> et par <b>juridiction</b> (office de publication : Maroc, Office européen, OMPI…). Les données viennent de l'OEB en direct ; sans mot-clé, l'onglet affiche tous les brevets publiés l'année la plus récente, et la carte mondiale se remplit au fur et à mesure, car l'OEB limite le nombre de recherches par minute. Les déposants, leurs pays, la classification et les réseaux sont calculés sur les notices des 100 premières familles renvoyées par l'OEB. Le bouton <b>Voir l'échantillon</b> affiche un export Espacenet réel (100 familles sur le dessalement de l'eau de mer). Les comptages OEB portent sur des <b>publications</b> (une invention publiée dans cinq offices compte cinq fois) ; l'échantillon Espacenet est compté en <b>familles</b>. Le statut juridique n'est pas fourni sous forme agrégée par l'OEB : il n'est pas affiché.</p><ul><li><b>Pays de priorité</b> : pays du premier dépôt, qui indique l'origine de l'invention.</li><li><b>Pays de protection</b> : offices où la famille du brevet est publiée.</li><li><b>Office de publication</b> : office qui a publié chaque document.</li><li><b>Classification</b> : regroupement par sous-classe (H10K), groupe (H10K30) ou sous-groupe (H10K30/50) ; cliquez une barre pour filtrer.</li></ul></section>"
+   + "<section id=\"ab-wb\"><h3>Banque mondiale</h3><p>L'onglet <b>Banque mondiale</b> interroge en direct l'API gratuite de la Banque mondiale (World Development Indicators). Choisissez un indicateur (dépenses de R-D, chercheurs, brevets, articles scientifiques, exportations de haute technologie, PIB, éducation, énergie, eau…) ou saisissez n'importe quel code de la Banque mondiale, puis les pays à comparer et la période. L'onglet affiche l'évolution par pays avec la valeur mondiale en pointillés, une carte et un classement mondial sur la dernière valeur disponible de chaque pays, et la définition officielle de l'indicateur. Les données se téléchargent en CSV.</p></section>"
    + "<section id=\"ab-import\"><h3>Importer et fusionner</h3><p>Déposez un ou plusieurs exports ; le site reconnaît la base de chaque fichier. Les doublons sont repérés par DOI, puis par titre, année et premier auteur, puis par titre et année quand une notice n'a pas de DOI. Les titres seulement proches sont listés pour vérification, jamais fusionnés d'office. Le corpus fusionné se télécharge en CSV. <b>Vos fichiers ne quittent pas votre navigateur.</b></p><ul><li><b>Web of Science</b> : Export → « Tab delimited file », contenu « Full Record ».</li><li><b>Scopus</b> : tout sélectionner, Exporter → CSV avec les informations de citation, bibliographiques, résumé et mots-clés.</li><li><b>Publish or Perish</b> : enregistrer les résultats en CSV (Google Scholar, Crossref, OpenAlex…).</li></ul></section>"
    + "<section id=\"ab-net\"><h3>Lire les réseaux</h3><p>Les réseaux reprennent les principes de VOSviewer. Chaque <b>nœud</b> est un mot-clé, un pays, un auteur, une institution, un code ou un déposant ; sa taille dépend du nombre de documents. Un <b>lien</b> relie deux éléments qui apparaissent dans les mêmes documents ; son épaisseur dépend du nombre de documents communs. Les <b>couleurs</b> montrent soit des groupes d'éléments fortement liés (méthode de Louvain), soit l'<b>année moyenne</b> des documents, pour repérer les thèmes émergents.</p></section>"
    + "<section id=\"ab-ind\"><h3>Définitions des indicateurs</h3><dl><dt>Indice h</dt><dd>h publications citées au moins h fois chacune.</dd><dt>Indice g</dt><dd>les g publications les plus citées totalisent au moins g² citations.</dd><dt>Quotient m</dt><dd>indice h divisé par le nombre d'années depuis la première publication.</dd><dt>Comptage entier</dt><dd>une publication compte pour chacun des pays de ses auteurs ; la somme des pays dépasse donc le total.</dd><dt>Part mondiale</dt><dd>publications du pays divisées par les publications mondiales dont le pays est connu.</dd><dt>Accès ouvert</dt><dd>or (revue ouverte), hybride (article ouvert dans une revue payante), vert (archive ouverte), bronze (lecture gratuite sans licence), diamant (sans frais de lecture ni de publication).</dd><dt>Famille de brevets</dt><dd>ensemble des publications d'une même invention dans différents offices.</dd></dl></section>"
@@ -840,7 +906,7 @@ en: {
   "setup.list": "<ol><li>Create a developer account on developers.epo.org (manually approved by the EPO), then an app to get the <i>Consumer Key</i> and <i>Consumer Secret</i>.</li><li>Create a Cloudflare Worker (free plan), paste <code>worker.js</code>, then add the secrets <code>EPO_KEY</code> and <code>EPO_SECRET</code> (and <code>LENS_TOKEN</code> if you get Lens access).</li><li>Paste the Worker URL into “Sources &amp; API keys” (or into <code>SITE_CONFIG</code> for all visitors).</li></ol>",
   "setup.note": "The EPO provides counts by year, office and CPC/IPC code. Lens.org adds applicant countries, applicants, legal status and the most cited patents.",
   "k.pubs": "Publications", "k.h": "h-index", "k.cit": "Citations", "k.oa": "Open access", "k.oaS": "share of publications", "k.pat": "Patents ›",
-  "k.hCorpus": "of the corpus", "k.g": "g-index: {g}", "k.citTop": "of the 200 most cited", "k.citAll": "corpus total", "k.citFile": "total of the files",
+  "k.hCorpus": "of the corpus", "k.hAll": "of the whole corpus", "k.hWait": "computing the exact value…", "k.g": "g-index: {g}", "k.citTop": "of the 200 most cited", "k.citAll": "corpus total", "k.citFile": "total of the files",
   "k.rank": "World rank", "k.rankShare": "{p} of world publications", "k.rankOf": "out of {n} countries", "k.worldShare": "World share",
   "k.worldShareS": "selected countries combined", "k.countries": "Countries", "k.countriesS": "with at least 1 author", "k.noAffil": "no affiliations",
   "k.patNone": "example in the Patents tab", "k.patSee": "see the Patents tab", "k.patSrc": "{src} · details in the tab", "k.patDemo": "fictitious example",
@@ -919,7 +985,16 @@ en: {
   "off.EP": "EPO (EP)", "off.WO": "WIPO (PCT)", "off.EA": "Eurasia (EA)", "off.AP": "ARIPO (AP)", "off.OA": "OAPI (OA)", "off.GC": "Gulf (GC)",
   "ex.inst": "Example: institution {x}", "ex.journal": "Example: journal {x}", "ex.title": "Example publication no. {n} (fictitious title)",
   "ex.author": "Author {x}.", "ex.journal1": "Example journal", "ex.applicant": "Example: applicant {x}", "ex.patent": "Example patent no. {n} (fictitious title)",
-  "tab.about": "About", "custom.err": "Cannot display {file}: {msg}. Check the file name in site.json and that the file is in the repository.",
+  "tab.about": "About", "tab.wb": "World Bank", "wf.indicator": "Indicator", "wf.countries": "Countries to compare", "wf.code": "Indicator code", "wf.years": "Period", "wf.other": "Other indicator (World Bank code)…",
+  "ph.wcode": "code, e.g. SP.POP.TOTL", "wg.rd": "Research and innovation", "wg.eco": "Economy", "wg.soc": "Education and society", "wg.env": "Energy, water and environment",
+  "wk.latest": "Latest value", "wk.rank": "World rank", "wk.change": "Change over the period", "wk.world": "World value", "wk.rankS": "{c} · out of {n} countries", "wk.noCountry": "choose a country",
+  "wp.trend": "Trend by country", "wp.map": "World map (latest available value)", "wp.about": "About this indicator", "wth.value": "Value", "wth.year": "Year",
+  "wp.mapNote": "Click a country on the map or in the table to add it to the comparison or remove it. Regional aggregates are excluded from the ranking.",
+  "wbtn.csv": "Download CSV", "w.src": "World Bank · WDI", "w.world": "World", "w.code": "Code", "w.source": "Source", "w.updated": "Last World Bank update",
+  "wst.loading": "Querying the World Bank…", "wst.ok": "World Bank data loaded", "wst.err": "The World Bank is not responding ({msg}). Try again in a moment.",
+  "wst.badCode": "Indicator not found at the World Bank: {code}", "wst.noData": "No data for this selection.", "wst.needCode": "Enter a World Bank indicator code.",
+  "na.wtrend": "No data for these countries over this period.", "na.wmap": "No country data for this indicator.", "wscope.none": "world",
+  "custom.err": "Cannot display {file}: {msg}. Check the file name in site.json and that the file is in the repository.",
   "site.err": "<strong>site.json has an error</strong> and was not applied: {msg}. Check quotes, commas and braces (free tool: jsonlint.com).", "ld.loading": "loading…", "ld.offices": "offices {a} / {b}", "ld.sample": "records…", "ld.noSample": "sample unavailable",
   "pp.zeroOffices": "{n} of the {m} offices queried returned no results and are not shown.", "pp.zeroKw": "Keywords are searched in English titles and abstracts: offices that publish only in their own language have few or none.", "src.sample": "Espacenet sample", "unit.sample": "patent families (Espacenet sample)", "unit.epo": "patent publications (documents, not families)",
   "pk.distinctApp": "Distinct applicants", "pk.inSample": "in the sample of {n} families", "pk.ctrySample": "applicant countries · sample of {n} families",
@@ -968,6 +1043,7 @@ en: {
   "about.body": "<section id=\"ab-start\"><h3>Get started in three steps</h3><ol><li>Pick a tab: <b>Live search</b> (OpenAlex publications), <b>Patents</b> or <b>Import and merge</b> (your Web of Science, Scopus or Publish or Perish exports).</li><li>Enter your criteria: a topic, one or more countries, a period, then <b>Analyze</b>.</li><li>Read the indicators, map, ranking and networks; copy tables as CSV for your reports.</li></ol></section>"
    + "<section id=\"ab-live\"><h3>Live search</h3><p>Publications come from <b>OpenAlex</b>, an open database of more than 300 million documents. The topic is searched in titles and abstracts; leave it empty to analyze a country's whole output.</p><ul><li><b>Countries</b>: add one or more. A single country shows its <b>world rank</b> and share of world output; the map panel switches between the world ranking and <b>partner countries</b> (co-publications).</li><li><b>Compare with</b>: a second topic or country, drawn on the annual chart.</li><li><b>Map</b>: click a country (or a ranking row) to open its profile.</li><li><b>Auto refresh</b>: reruns the analysis every 5, 15 or 60 minutes.</li></ul></section>"
    + "<section id=\"ab-pat\"><h3>Patents</h3><p>Filter by keywords, by <b>CPC</b> or <b>IPC</b> code (for example <code>H10K</code> or <code>Y02E10/549</code>, several codes separated by commas), by <b>applicant</b> and by <b>jurisdiction</b> (publishing office: Morocco, European Patent Office, WIPO…). Data comes live from the EPO; without a keyword, the tab shows all patents published in the most recent year, and the world map fills in progressively because the EPO limits searches per minute. Applicants, their countries, classification and networks are computed on the records of the first 100 families returned by the EPO. The <b>View sample</b> button shows a real Espacenet export (100 families on seawater desalination). EPO counts are <b>publications</b> (an invention published in five offices counts five times); the Espacenet sample is counted in <b>families</b>. The EPO does not provide legal status in aggregate form, so it is not shown.</p><ul><li><b>Priority country</b>: country of first filing, which shows where the invention comes from.</li><li><b>Protection countries</b>: offices where the patent family is published.</li><li><b>Publishing office</b>: office that published each document.</li><li><b>Classification</b>: grouped by subclass (H10K), group (H10K30) or subgroup (H10K30/50); click a bar to filter.</li></ul></section>"
+   + "<section id=\"ab-wb\"><h3>World Bank</h3><p>The <b>World Bank</b> tab queries the free World Bank API (World Development Indicators) live. Choose an indicator (R&amp;D spending, researchers, patents, scientific articles, high-technology exports, GDP, education, energy, water…) or enter any World Bank code, then the countries to compare and the period. The tab shows the trend by country with the world value as a dotted line, a map and a world ranking based on each country's latest available value, and the official definition of the indicator. Data can be downloaded as CSV.</p></section>"
    + "<section id=\"ab-import\"><h3>Import and merge</h3><p>Drop one or more exports; the site recognizes each file's database. Duplicates are matched by DOI, then by title, year and first author, then by title and year when a record has no DOI. Titles that are only similar are listed for review, never merged automatically. The merged corpus can be downloaded as CSV. <b>Your files never leave your browser.</b></p><ul><li><b>Web of Science</b>: Export → “Tab delimited file”, record content “Full Record”.</li><li><b>Scopus</b>: select all, Export → CSV with citation, bibliographical, abstract and keyword information.</li><li><b>Publish or Perish</b>: save the results as CSV (Google Scholar, Crossref, OpenAlex…).</li></ul></section>"
    + "<section id=\"ab-net\"><h3>Reading the networks</h3><p>The networks follow VOSviewer's principles. Each <b>node</b> is a keyword, country, author, institution, code or applicant; its size reflects the number of documents. A <b>link</b> joins two items that appear in the same documents; its width reflects the number of shared documents. <b>Colors</b> show either clusters of closely linked items (Louvain method) or the <b>average year</b> of the documents, to spot emerging topics.</p></section>"
    + "<section id=\"ab-ind\"><h3>Indicator definitions</h3><dl><dt>h-index</dt><dd>h publications each cited at least h times.</dd><dt>g-index</dt><dd>the g most cited publications total at least g² citations.</dd><dt>m-quotient</dt><dd>h-index divided by the number of years since the first publication.</dd><dt>Full counting</dt><dd>a publication counts once for each of its authors' countries, so country totals exceed the overall total.</dd><dt>World share</dt><dd>the country's publications divided by world publications with a known country.</dd><dt>Open access</dt><dd>gold (open journal), hybrid (open article in a subscription journal), green (repository copy), bronze (free to read without a license), diamond (no reading or publishing fees).</dd><dt>Patent family</dt><dd>all publications of the same invention across patent offices.</dd></dl></section>"
@@ -1229,7 +1305,7 @@ async function fetchLive(s, force) {
     oa("/works", { filter: filter + ",countries_distinct_count:>1", per_page: 1, select: "id" }).then(j => j.meta.count).catch(() => null)
   ]);
   return {
-    mode: "live", range: [s.y1, s.y2], selected: s.countries.slice(), main, cmp,
+    mode: "live", range: [s.y1, s.y2], selected: s.countries.slice(), main, cmp, filter,
     total: top.meta ? top.meta.count : years.reduce((a, g) => a + g.count, 0),
     years: years.map(g => [Number(g.key), g.count]).filter(d => d[0]),
     years2: years2 ? years2.map(g => [Number(g.key), g.count]).filter(d => d[0]) : null,
@@ -1812,8 +1888,8 @@ function renderKPIs() {
   $("kPubs").textContent = fmt(DATA.total);
   $("kPubsS").textContent = `${DATA.range[0]}–${DATA.range[1]}`;
   const hi = hIndex(DATA.works);
-  $("kH").textContent = (hi.capped ? "≥ " : "") + hi.h;
-  $("kHS").textContent = file ? t("k.g", { g: hi.g }) : t("k.hCorpus");
+  if (DATA.hExact != null) { $("kH").textContent = fmt(DATA.hExact); $("kHS").textContent = t("k.hAll"); }
+  else { $("kH").textContent = (hi.capped ? "≥ " : "") + fmt(hi.h); $("kHS").textContent = file ? t("k.g", { g: hi.g }) : hi.capped ? t("k.hWait") : t("k.hCorpus"); }
   $("kCit").textContent = fmt(DATA.works.reduce((a, w) => a + w.cites, 0));
   $("kCitS").textContent = file ? t("k.citFile") : (DATA.total > 200 ? t("k.citTop") : t("k.citAll"));
   const box = $("kRankBox");
@@ -1928,9 +2004,26 @@ async function run(force) {
     $("updated").textContent = now();
     if (demo) setStatus("demo", t("st.demo"));
     else setStatus("live", t("st.live"));
-    if (!demo) checkBudget();
+    if (!demo) { checkBudget(); refineH(DATA, force); }
   } catch (e) { setStatus("err", e.message); }
   finally { if (my === inflight) { $("go").disabled = false; $("grid").classList.remove("loading"); setProgress(null); pubBusy(false); } }
+}
+/* Exact h-index of the whole corpus: the 200 most cited works only give "≥ 200" for large corpora,
+   so the h-index is found by binary search on OpenAlex counts (h = largest h with at least h works cited ≥ h times). */
+async function refineH(d, force) {
+  if (!d || d.mode !== "live" || !d.filter) return;
+  const c = d.works.map(w => w.cites).sort((a, b) => b - a);
+  if (c.length < 200 || c[199] < 200) return;
+  let lo = 200, hi = Math.min(c[0], d.total || c[0]);
+  try {
+    while (lo < hi) {
+      const mid = Math.floor((lo + hi + 1) / 2);
+      const j = await getJSON(oaURL("/works", { filter: d.filter + ",cited_by_count:>" + (mid - 1), per_page: 1, select: "id" }), force);
+      if (DATA !== d) return;
+      if (((j.meta && j.meta.count) || 0) >= mid) lo = mid; else hi = mid - 1;
+    }
+    d.hExact = lo; if (DATA === d && MODE === "live") renderKPIs();
+  } catch { if (DATA === d) { $("kHS").textContent = t("k.hCorpus"); } }
 }
 async function checkBudget() {
   $("budget").textContent = "";
@@ -2534,6 +2627,241 @@ function analyzePatents(recs, ps) {
 $("pSample").addEventListener("click", () => { PSRC = "sample"; runPat(); });
 $("pLive").addEventListener("click", () => { PSRC = "api"; runPat(); });
 
+/* ======================================================================
+   WORLD BANK TAB (World Bank Open Data API: free, no key)
+   ====================================================================== */
+const WB_API = "https://api.worldbank.org/v2";
+// [group, code, French label, English label]. Any other WDI code can be typed with "Other indicator".
+const WB_IND = [
+  ["rd", "GB.XPD.RSDV.GD.ZS", "Dépenses de R-D (% du PIB)", "R&D expenditure (% of GDP)"],
+  ["rd", "SP.POP.SCIE.RD.P6", "Chercheurs en R-D (par million d'habitants)", "Researchers in R&D (per million people)"],
+  ["rd", "IP.JRN.ARTC.SC", "Articles scientifiques et techniques", "Scientific and technical journal articles"],
+  ["rd", "IP.PAT.RESD", "Demandes de brevets, résidents", "Patent applications, residents"],
+  ["rd", "IP.PAT.NRES", "Demandes de brevets, non-résidents", "Patent applications, nonresidents"],
+  ["rd", "IP.TMK.TOTL", "Demandes d'enregistrement de marques", "Trademark applications, total"],
+  ["rd", "TX.VAL.TECH.MF.ZS", "Exportations de haute technologie (% des exportations manufacturées)", "High-technology exports (% of manufactured exports)"],
+  ["rd", "TX.VAL.TECH.CD", "Exportations de haute technologie ($ US courants)", "High-technology exports (current US$)"],
+  ["rd", "BX.GSR.ROYL.CD", "Redevances de propriété intellectuelle reçues ($ US courants)", "Charges for the use of intellectual property, receipts (current US$)"],
+  ["eco", "NY.GDP.MKTP.CD", "PIB ($ US courants)", "GDP (current US$)"],
+  ["eco", "NY.GDP.PCAP.CD", "PIB par habitant ($ US courants)", "GDP per capita (current US$)"],
+  ["eco", "NY.GDP.MKTP.KD.ZG", "Croissance du PIB (% annuel)", "GDP growth (annual %)"],
+  ["eco", "NE.EXP.GNFS.ZS", "Exportations de biens et services (% du PIB)", "Exports of goods and services (% of GDP)"],
+  ["eco", "BX.KLT.DINV.WD.GD.ZS", "Investissements directs étrangers, entrées nettes (% du PIB)", "Foreign direct investment, net inflows (% of GDP)"],
+  ["eco", "FP.CPI.TOTL.ZG", "Inflation, prix à la consommation (% annuel)", "Inflation, consumer prices (annual %)"],
+  ["soc", "SP.POP.TOTL", "Population totale", "Population, total"],
+  ["soc", "SE.TER.ENRR", "Taux de scolarisation dans le supérieur (% brut)", "School enrollment, tertiary (% gross)"],
+  ["soc", "SE.XPD.TOTL.GD.ZS", "Dépenses publiques d'éducation (% du PIB)", "Government expenditure on education (% of GDP)"],
+  ["soc", "IT.NET.USER.ZS", "Utilisateurs d'Internet (% de la population)", "Individuals using the Internet (% of population)"],
+  ["soc", "SL.UEM.TOTL.ZS", "Chômage (% de la population active)", "Unemployment (% of total labor force)"],
+  ["env", "EG.ELC.ACCS.ZS", "Accès à l'électricité (% de la population)", "Access to electricity (% of population)"],
+  ["env", "EG.FEC.RNEW.ZS", "Énergies renouvelables (% de la consommation finale)", "Renewable energy consumption (% of total final energy)"],
+  ["env", "SH.H2O.SMDW.ZS", "Eau potable gérée en toute sécurité (% de la population)", "People using safely managed drinking water services (% of population)"],
+  ["env", "ER.H2O.FWST.ZS", "Niveau de stress hydrique (% des ressources disponibles)", "Level of water stress (% of available freshwater resources)"]
+];
+let WSEL = ["MA", "CA", "FR", "US"], WDATA = null, winflight = 0, wMapBound = false, wRankBound = false;
+const wbChips = makeChips("wchips", "wcInput", () => WSEL, v => { WSEL = v; });
+function fillWbIndicators() {
+  const sel = $("wind"), cur = sel.value;
+  sel.innerHTML = ["rd", "eco", "soc", "env"].map(g => `<optgroup label="${esc(t("wg." + g))}">` +
+    WB_IND.filter(r => r[0] === g).map(r => `<option value="${r[1]}">${esc(LANG === "fr" ? r[2] : r[3])}</option>`).join("") + "</optgroup>").join("")
+    + `<option value="_other">${esc(t("wf.other"))}</option>`;
+  if (cur) sel.value = cur;
+  $("wcode").hidden = sel.value !== "_other";
+}
+$("wind").addEventListener("change", () => {
+  $("wcode").hidden = $("wind").value !== "_other";
+  if ($("wind").value === "_other") $("wcode").focus(); else runWb();
+});
+const wbLabel = code => { const r = WB_IND.find(x => x[1] === code); return r ? (LANG === "fr" ? r[2] : r[3]) : ""; };
+function wbState() {
+  let y1 = parseInt($("wy1").value, 10) || 2000, y2 = parseInt($("wy2").value, 10) || CUR_YEAR;
+  y2 = Math.min(Math.max(y2, 1960), CUR_YEAR); y1 = Math.min(Math.max(y1, 1960), y2);
+  const code = ($("wind").value === "_other" ? $("wcode").value : $("wind").value).trim().toUpperCase();
+  return { code, countries: WSEL.slice(), y1, y2 };
+}
+/* Direct call to the World Bank; if it fails (network, CORS), the same call goes through the proxy. */
+const WCACHE = new Map();
+async function wbFetch(path, params) {
+  const qs = new URLSearchParams({ format: "json", ...params }).toString();
+  const lp = (LANG === "fr" ? "/fr" : "/en") + path + "?" + qs;
+  const hit = WCACHE.get(lp); if (hit && Date.now() - hit.t < 3600000) return hit.j;
+  const bases = [WB_API]; if (cfg.worker) bases.push(cfg.worker + "/worldbank");
+  let err;
+  for (const b of bases) {
+    try {
+      const r = await fetch(b + lp);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const j = await r.json();
+      if (Array.isArray(j) && j[0] && j[0].message) throw Object.assign(new Error((j[0].message[0] || {}).value || "API"), { bad: true });
+      WCACHE.set(lp, { t: Date.now(), j }); return j;
+    } catch (e) { err = e; if (e.bad) break; }
+  }
+  throw err;
+}
+const COLON = () => LANG === "fr" ? " : " : ": ";
+const fmtV = v => {
+  if (v == null || isNaN(v)) return "—";
+  const a = Math.abs(v);
+  if (a >= 1e6) return new Intl.NumberFormat(LOC(), { notation: "compact", maximumFractionDigits: 2 }).format(v);
+  return Number(v).toLocaleString(LOC(), { maximumFractionDigits: a < 10 ? 2 : a < 1000 ? 1 : 0 });
+};
+async function runWb() {
+  if (MODE !== "wb") return;
+  if ($("wcInput").value.trim()) wbChips.add();
+  const s = wbState();
+  if (!s.code) { setStatus("err", t("wst.needCode")); return; }
+  store.set("wlast", JSON.stringify(s));
+  const my = ++winflight;
+  setStatus("", t("wst.loading")); setProgress(-1);
+  document.querySelectorAll("#wbView .panel").forEach(p => busy(p, t("ld.loading")));
+  try {
+    const ctry = [...s.countries, "WLD"].join(";");
+    const [meta, series, latest] = await Promise.all([
+      wbFetch("/indicator/" + encodeURIComponent(s.code), {}),
+      wbFetch("/country/" + ctry + "/indicator/" + encodeURIComponent(s.code), { date: s.y1 + ":" + s.y2, per_page: "20000" }),
+      wbFetch("/country/all/indicator/" + encodeURIComponent(s.code), { mrnev: "1", per_page: "500" })
+    ]);
+    if (my !== winflight || MODE !== "wb") return;
+    const im = (meta && meta[1] && meta[1][0]) || {};
+    const rows = (series && series[1]) || [], lrows = (latest && latest[1]) || [];
+    const isW = r => r.countryiso3code === "WLD" || (r.country && r.country.id === "1W");
+    const iso = new Set(ISO);
+    const byC = new Map();
+    rows.forEach(r => {
+      if (r.value == null) return;
+      const k = isW(r) ? "WLD" : r.country && r.country.id; if (!k) return;
+      if (!byC.has(k)) byC.set(k, new Map());
+      byC.get(k).set(Number(r.date), Number(r.value));
+    });
+    const world = lrows.find(isW);
+    const ranking = lrows.filter(r => r.value != null && r.country && iso.has(r.country.id))
+      .map(r => [r.country.id, Number(r.value), Number(r.date)]).sort((a, b) => b[1] - a[1]);
+    WDATA = { s, name: im.name || wbLabel(s.code) || s.code, note: im.sourceNote || "", org: im.sourceOrganization || "",
+      source: im.source && im.source.value || "", updated: (series && series[0] && series[0].lastupdated) || "",
+      byC, ranking, world: world && world.value != null ? [Number(world.value), Number(world.date)] : null };
+    renderWb();
+    setStatus("live", t("wst.ok")); $("updated").textContent = now();
+  } catch (e) {
+    if (my !== winflight) return;
+    setStatus("err", e.bad ? t("wst.badCode", { code: s.code }) : t("wst.err", { msg: e.message }));
+  } finally {
+    if (my === winflight) { setProgress(null); document.querySelectorAll("#wbView .panel").forEach(p => busy(p, null)); }
+  }
+}
+function renderWb() {
+  const d = WDATA; if (!d) return;
+  const th = T(), s = d.s, ax = axisCommon(th);
+  const cn = c => c === "WLD" ? t("w.world") : cname(c);
+  $("wscope").innerHTML = `<b>${esc(d.name)}</b> · ${esc(s.countries.length ? s.countries.map(cname).join(", ") : t("wscope.none"))} · ${s.y1}–${s.y2}`;
+  // KPIs: first selected country
+  const c0 = s.countries[0], m0 = c0 && d.byC.get(c0);
+  const yrs0 = m0 ? [...m0.keys()].sort((a, b) => a - b) : [];
+  if (c0 && yrs0.length) {
+    const yl = yrs0[yrs0.length - 1], yf = yrs0[0];
+    $("wK1").textContent = fmtV(m0.get(yl)); $("wK1s").textContent = cname(c0) + " · " + yl;
+    const a = m0.get(yf), b = m0.get(yl);
+    if (yrs0.length > 1 && a > 0 && b >= 0) { const ch = b / a - 1; $("wK3").textContent = (ch > 0 ? "+" : "") + pct(ch); }
+    else $("wK3").textContent = yrs0.length > 1 ? fmtV(b - a) : "—";
+    $("wK3s").textContent = cname(c0) + " · " + yf + " → " + yl;
+  } else { $("wK1").textContent = "—"; $("wK1s").textContent = c0 ? cname(c0) + " · " + t("wst.noData") : t("wk.noCountry"); $("wK3").textContent = "—"; $("wK3s").textContent = ""; }
+  const ri = c0 ? d.ranking.findIndex(r => r[0] === c0) : -1;
+  $("wK2").innerHTML = ri >= 0 ? ordinal(ri + 1) : "—";
+  $("wK2s").textContent = ri >= 0 ? t("wk.rankS", { c: cname(c0), n: fmt(d.ranking.length) }) : (c0 ? cname(c0) : t("wk.noCountry"));
+  $("wK4").textContent = d.world ? fmtV(d.world[0]) : "—"; $("wK4s").textContent = d.world ? t("w.world") + " · " + d.world[1] : "";
+  // Trend
+  const ys = []; for (let y = s.y1; y <= s.y2; y++) ys.push(y);
+  const keys = [...s.countries.filter(c => d.byC.has(c)), ...(d.byC.has("WLD") ? ["WLD"] : [])];
+  if (!keys.length) noChart("cWTrend", t("na.wtrend"));
+  else {
+    const pal = [th.accent, th.ochre, th.accent2, th.good, "#9b5de5", "#e07a5f", "#3d8b8b", "#b08968"];
+    let first = ys.findIndex(y => keys.some(k => d.byC.get(k).has(y))); if (first < 0) first = 0;
+    let last = ys.length - 1; while (last > first && !keys.some(k => d.byC.get(k).has(ys[last]))) last--;
+    const yv = ys.slice(first, last + 1);
+    const c = chart("cWTrend");
+    if (c) c.setOption({
+      animationDuration: 500, color: pal, grid: { left: 8, right: 16, top: 36, bottom: 8, containLabel: true },
+      legend: { top: 0, left: 0, textStyle: { color: th.ink, fontSize: 12 }, icon: "roundRect", itemWidth: 12, itemHeight: 4 },
+      tooltip: { trigger: "axis", ...tip(th), valueFormatter: v => fmtV(v) },
+      xAxis: { type: "category", data: yv, boundaryGap: false, ...ax, splitLine: { show: false } },
+      yAxis: { type: "value", scale: true, ...ax, axisLine: { show: false }, axisLabel: { ...ax.axisLabel, formatter: v => fmtV(v) } },
+      series: keys.map((k, i) => ({ name: cn(k), type: "line", connectNulls: true, symbolSize: 5, showSymbol: yv.length < 30,
+        data: yv.map(y => d.byC.get(k).has(y) ? d.byC.get(k).get(y) : null),
+        ...(k === "WLD" ? { lineStyle: { type: "dashed", width: 1.5, color: th.muted }, itemStyle: { color: th.muted } } : { lineStyle: { width: 2.2 }, itemStyle: { color: pal[i % pal.length] } }) }))
+    }, true);
+  }
+  $("wUnitNote").textContent = d.name + (d.updated ? " · " + t("w.updated") + COLON() + d.updated : "");
+  // Map + ranking
+  const sel = new Set(s.countries), rk = d.ranking, max = rk.length ? Math.max(...rk.map(r => Math.abs(r[1]))) : 1;
+  $("tWRank").tBodies[0].innerHTML = rk.length ? rk.map(([c, v, y], i) => `<tr data-code="${c}" class="${sel.has(c) ? "sel" : ""}"><td class="rank">${i + 1}</td><td>${esc(cname(c))}<div class="bar"><i style="width:${(Math.abs(v) / (max || 1) * 100).toFixed(1)}%;background:var(--accent)"></i></div></td><td class="n">${fmtV(v)}</td><td class="n">${y}</td></tr>`).join("")
+    : `<tr><td colspan="4" class="note">${esc(t("na.wmap"))}</td></tr>`;
+  if (!wRankBound) { wRankBound = true; $("tWRank").tBodies[0].addEventListener("click", e => { const tr = e.target.closest("tr[data-code]"); if (tr) wToggle(tr.dataset.code); }); }
+  const mn = mapName();
+  if (!mn) noChart("cWMap", t("map.noBase"));
+  else if (!rk.length) noChart("cWMap", t("na.wmap"));
+  else {
+    const pos = rk.every(r => r[1] > 0), vals = rk.map(r => r[1]);
+    const useLog = pos && Math.max(...vals) / Math.min(...vals) > 200;
+    const tr = v => useLog ? Math.log10(v) : v;
+    const data = rk.map(([cc, v, y], i) => {
+      const o = { name: geoName(cc), value: tr(v), raw: v, year: y, code: cc, rank: i + 1 };
+      if (sel.has(cc)) o.itemStyle = { borderColor: th.ink, borderWidth: 1.5 };
+      if (cc === "MA" && !sel.has(cc)) o.itemStyle = { borderWidth: 0 };
+      return o;
+    });
+    if (!data.some(o => o.code === "MA")) data.push({ name: "Morocco", value: NaN, code: "MA", raw: null, itemStyle: { borderWidth: 0 } });
+    const tv = data.filter(o => !isNaN(o.value)).map(o => o.value);
+    const c = chart("cWMap");
+    if (c) {
+      c.setOption({
+        tooltip: { trigger: "item", ...tip(th), formatter: p => {
+          const o = p.data; if (!o || !o.code) return esc(p.name);
+          if (o.raw == null) return `<b>${esc(cname(o.code))}</b><br>${esc(t("wst.noData"))}`;
+          return `<b>${esc(cname(o.code))}</b> · ${ordinal(o.rank)}<br>${fmtV(o.raw)} <span style="color:${th.muted}">(${o.year})</span>`;
+        } },
+        visualMap: { min: Math.min(...tv), max: Math.max(...tv), left: 0, bottom: 0, orient: "horizontal", itemWidth: 10, itemHeight: 120, calculable: false,
+          text: [fmtV(useLog ? Math.pow(10, Math.max(...tv)) : Math.max(...tv)), fmtV(useLog ? Math.pow(10, Math.min(...tv)) : Math.min(...tv))],
+          textStyle: { color: th.muted, fontFamily: th.mono, fontSize: 11 }, inRange: { color: [th.soft, th.accent] }, outOfRange: { color: th.line } },
+        series: [{ type: "map", map: mn, roam: true, scaleLimit: { min: 1, max: 8 }, top: 10, bottom: 30,
+          itemStyle: { areaColor: th.line, borderColor: th.surface, borderWidth: 0.6 },
+          emphasis: { label: { show: false }, itemStyle: { areaColor: th.ochre } }, select: { disabled: true }, data }]
+      }, true);
+      if (!wMapBound) { wMapBound = true; c.on("click", p => { const cc = (p.data && p.data.code) || GEO2ISO[p.name]; if (cc) wToggle(unify(cc)); }); }
+    }
+  }
+  // Definition
+  const lines = [];
+  lines.push(`<p><b>${esc(d.name)}</b> <span class="mono">· ${esc(t("w.code"))} ${esc(s.code)}</span></p>`);
+  if (d.note) lines.push(`<p>${esc(d.note)}</p>`);
+  if (d.org || d.source) lines.push(`<p class="note">${esc(t("w.source") + COLON())}${esc([d.org, d.source].filter(Boolean).join(" · "))}</p>`);
+  lines.push(`<p class="note"><a href="https://data.worldbank.org/indicator/${encodeURIComponent(s.code)}" target="_blank" rel="noopener">data.worldbank.org/indicator/${esc(s.code)}</a></p>`);
+  $("wAbout").innerHTML = lines.join("");
+}
+function wToggle(cc) {
+  if (!cc) return;
+  WSEL = WSEL.includes(cc) ? WSEL.filter(x => x !== cc) : [...WSEL, cc];
+  wbChips.draw(); runWb();
+}
+async function saveCSV(filename, text) {
+  const data = "﻿" + text;
+  if (dlNS) { try { await dlNS.save({ filename, data: new Blob([data], { type: "text/csv" }) }); } catch {} return; }
+  try {
+    const blob = new Blob([data], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  } catch {}
+}
+$("wDlSeries").addEventListener("click", () => {
+  if (!WDATA) return; const d = WDATA, out = [["indicator", "code", "country_code", "country", "year", "value"]];
+  d.byC.forEach((m, c) => [...m.entries()].sort((a, b) => a[0] - b[0]).forEach(([y, v]) => out.push([d.name, d.s.code, c, c === "WLD" ? t("w.world") : cname(c), y, v])));
+  saveCSV("worldbank_" + d.s.code + "_" + d.s.y1 + "-" + d.s.y2 + ".csv", csv(out));
+});
+$("wDlRank").addEventListener("click", () => {
+  if (!WDATA) return; const d = WDATA;
+  saveCSV("worldbank_" + d.s.code + "_latest.csv", csv([["rank", "country_code", "country", "value", "year", "indicator"], ...d.ranking.map(([c, v, y], i) => [i + 1, c, cname(c), v, y, d.name])]));
+});
+$("wform").addEventListener("submit", e => { e.preventDefault(); runWb(); });
+$("tabWb").addEventListener("click", () => setMode("wb"));
+
 /* ---------- tabs ---------- */
 function setMode(m) {
   MODE = m;
@@ -2541,14 +2869,15 @@ function setMode(m) {
   $("tabPat").setAttribute("aria-selected", String(m === "pat"));
   $("tabFile").setAttribute("aria-selected", String(m === "file"));
   $("tabAbout").setAttribute("aria-selected", String(m === "about"));
-  $("liveControls").hidden = m !== "live"; $("patControls").hidden = m !== "pat"; $("importer").hidden = m !== "file";
-  $("autoBox").hidden = m === "file"; $("statusBar").hidden = m === "about";
+  $("tabWb").setAttribute("aria-selected", String(m === "wb"));
+  $("liveControls").hidden = m !== "live"; $("patControls").hidden = m !== "pat"; $("importer").hidden = m !== "file"; $("wbControls").hidden = m !== "wb";
+  $("autoBox").hidden = m === "file" || m === "wb"; $("statusBar").hidden = m === "about";
   const isCustom = m.startsWith("custom:"), cid = isCustom ? m.slice(7) : "";
   document.querySelectorAll("#tabs [data-custom]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.custom === cid)));
   if (isCustom) { $("liveControls").hidden = true; $("autoBox").hidden = true; $("statusBar").hidden = true; }
-  $("pubView").hidden = m === "pat" || m === "about" || isCustom; $("patView").hidden = m !== "pat"; $("aboutView").hidden = m !== "about"; $("customView").hidden = !isCustom;
+  $("pubView").hidden = m === "pat" || m === "about" || m === "wb" || isCustom; $("patView").hidden = m !== "pat"; $("wbView").hidden = m !== "wb"; $("aboutView").hidden = m !== "about"; $("customView").hidden = !isCustom;
   try {
-    const want = m === "about" ? "#about" : isCustom ? "#" + cid : "";
+    const want = m === "about" ? "#about" : m === "wb" ? "#worldbank" : isCustom ? "#" + cid : "";
     if (want && location.hash !== want) location.hash = want.slice(1);
     else if (!want && location.hash && location.hash !== "#") history.replaceState(null, "", location.pathname + location.search);
   } catch {}
@@ -2559,6 +2888,7 @@ function setMode(m) {
   Object.values(charts).forEach(c => c.resize());
   if (m === "live") run();
   else if (m === "pat") { inflight++; $("go").disabled = false; $("grid").classList.remove("loading"); runPat(); }
+  else if (m === "wb") { inflight++; pinflight++; $("go").disabled = false; $("pgo").disabled = false; $("grid").classList.remove("loading"); runWb(); }
   else {
     inflight++; pinflight++; $("go").disabled = false; $("pgo").disabled = false; $("grid").classList.remove("loading");
     if (FILES.length) { DATA = dataFromMerge(MERGE || runMerge()); PAT = null; renderFileBanner(); renderAll(); setStatus("live", t("st.fileLoaded")); }
@@ -2572,6 +2902,7 @@ $("tabAbout").addEventListener("click", () => setMode("about"));
 window.addEventListener("hashchange", () => {
   const h = location.hash.slice(1);
   if (h === "about" && MODE !== "about") setMode("about");
+  else if (h === "worldbank" && MODE !== "wb") setMode("wb");
   else if (h && CUSTOM.some(x => x.id === h) && MODE !== "custom:" + h) setMode("custom:" + h);
 });
 function renderAbout() {
@@ -2596,7 +2927,7 @@ let SITE = null;
 const CUSTOM = [];   // added tabs: { id, title: {fr, en}, file }
 const MARKED_URL = "https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js";
 const pickLang = v => v == null ? "" : typeof v === "string" ? v : (v[LANG] || v.fr || v.en || "");
-const BUILTIN_TABS = { live: "tabLive", patents: "tabPat", import: "tabFile", about: "tabAbout" };
+const BUILTIN_TABS = { live: "tabLive", patents: "tabPat", worldbank: "tabWb", import: "tabFile", about: "tabAbout" };
 async function renderFileInto(el, file, stillWanted) {
   el.innerHTML = `<p class="note">${esc(t("ld.loading"))}</p>`;
   try {
@@ -2635,6 +2966,7 @@ async function loadSite() {
   try { j = JSON.parse(await r.text()); }
   catch (e) { $("siteBanner").innerHTML = t("site.err", { msg: esc(e.message) }); $("siteBanner").hidden = false; return; }
   SITE = j;
+  if (j.colors || j.darkColors) applyColors(j.colors, j.darkColors);
   if (j.about) SITE_CONFIG.about = { ...(SITE_CONFIG.about || {}), ...j.about };
   if (j.texts) ["fr", "en"].forEach(l => Object.assign(I18N[l], (j.texts && j.texts[l]) || {}));
   (j.hideTabs || []).forEach(name => { const b = $(BUILTIN_TABS[name]); if (b) b.hidden = true; });
@@ -2642,7 +2974,7 @@ async function loadSite() {
   (j.tabs || []).forEach(tab => {
     if (!tab || !tab.id || !tab.file) return;
     const id = String(tab.id).toLowerCase().replace(/[^a-z0-9-]/g, "-");
-    if (CUSTOM.some(x => x.id === id) || ["about", "settings", "sidebar", "customize", "upgrade", "downloads"].includes(id)) return;
+    if (CUSTOM.some(x => x.id === id) || ["about", "worldbank", "settings", "sidebar", "customize", "upgrade", "downloads"].includes(id)) return;
     CUSTOM.push({ id, title: tab.title || id, file: tab.file });
     const b = document.createElement("button");
     b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", "false"); b.dataset.custom = id;
@@ -2656,7 +2988,7 @@ async function loadSite() {
   if (h && CUSTOM.some(x => x.id === h)) setMode("custom:" + h);
   else if (MODE === "about") renderAbout();
   else {
-    const cur = { live: "tabLive", pat: "tabPat", file: "tabFile" }[MODE];
+    const cur = { live: "tabLive", pat: "tabPat", wb: "tabWb", file: "tabFile" }[MODE];
     if (cur && $(cur).hidden) {
       const first = [...document.querySelectorAll("#tabs button")].find(x => !x.hidden);
       if (first) first.click();
@@ -2668,6 +3000,35 @@ const drop = $("drop");
 ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
 ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
 drop.addEventListener("drop", e => addFiles([...e.dataTransfer.files]));
+
+/* ---------- site colors (site.json "colors" and "darkColors") ---------- */
+const COLOR_KEYS = ["main", "second", "background", "panels", "text"];
+const COLOR_DEFAULT = { main: "#1C6E8C", second: "#B4741C", background: "#F2F5F6", panels: "#FFFFFF", text: "#13222B" };
+const DARK_DEFAULT = { background: "#0D161B", panels: "#14212A", text: "#E2EBEE" };
+const isHex = v => typeof v === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v.trim());
+const hex6 = v => { v = v.trim(); return (v.length === 4 ? "#" + [...v.slice(1)].map(x => x + x).join("") : v).toUpperCase(); };
+const rgbOf = h => [1, 3, 5].map(i => parseInt(hex6(h).slice(i, i + 2), 16));
+/* mix(a, b, w): w = share of color b (0..1) */
+const mix = (a, b, w) => "#" + rgbOf(a).map((x, i) => Math.round(x * (1 - w) + rgbOf(b)[i] * w).toString(16).padStart(2, "0")).join("").toUpperCase();
+const pickColors = (o, base) => { const r = { ...base }; Object.keys(o || {}).forEach(k => { if (COLOR_KEYS.includes(k) && isHex(o[k])) r[k] = hex6(o[k]); }); return r; };
+function colorVars(c, dark) {
+  const v = dark
+    ? { paper: c.background, surface: c.panels, ink: c.text, muted: mix(c.text, c.background, .4), line: mix(c.text, c.background, .85),
+        accent: c.main, "accent-2": mix(c.main, "#FFFFFF", .4), "accent-soft": mix(c.main, c.panels, .75), ochre: c.second, "ochre-soft": mix(c.second, c.panels, .75) }
+    : { paper: c.background, surface: c.panels, ink: c.text, muted: mix(c.text, c.background, .45), line: mix(c.text, c.background, .85),
+        accent: c.main, "accent-2": mix(c.main, "#000000", .35), "accent-soft": mix(c.main, "#FFFFFF", .82), ochre: c.second, "ochre-soft": mix(c.second, "#FFFFFF", .75) };
+  return Object.entries(v).map(([k, x]) => `--${k}:${x}`).join(";");
+}
+function applyColors(light, dark) {
+  const L = pickColors(light, COLOR_DEFAULT);
+  const D = pickColors(dark, { ...DARK_DEFAULT, main: mix(L.main, "#FFFFFF", .35), second: mix(L.second, "#FFFFFF", .25) });
+  let el = $("siteColors");
+  if (!el) { el = document.createElement("style"); el.id = "siteColors"; document.head.appendChild(el); }
+  const dv = colorVars(D, true);
+  el.textContent = `:root{${colorVars(L, false)}}\n@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){${dv};color-scheme:dark}}\n:root[data-theme="dark"]{${dv};color-scheme:dark}`;
+  try { rerender(); } catch {}
+  return L;
+}
 
 /* ---------- CSV copy ---------- */
 function csv(rows) { return rows.map(r => r.map(v => { const s = String(v ?? ""); return /[",;\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(",")).join("\n"); }
@@ -2714,10 +3075,11 @@ $("auto").addEventListener("change", setAuto);
 function setLang(l) {
   if (l === LANG) return;
   LANG = l; store.set("lang", l); nf = new Intl.NumberFormat(LOC());
-  applyStatic(); fillDatalists(); pubChips.draw(); patChips.draw();
+  applyStatic(); fillDatalists(); fillWbIndicators(); pubChips.draw(); patChips.draw(); wbChips.draw();
   if ($("c2").value.trim()) { const c = resolveCountryInput($("c2").value); if (c) $("c2").value = cname(c); }
   if (MODE === "live") run();
   else if (MODE === "pat") runPat();
+  else if (MODE === "wb") runWb();
   else if (MODE === "about") renderAbout();
   else if (MODE.startsWith("custom:")) renderCustom(MODE.slice(7));
   else if (FILES.length) refreshFiles();
@@ -2726,7 +3088,7 @@ function setLang(l) {
 document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
 
 /* ---------- theme ---------- */
-const rerender = () => { Object.values(charts).forEach(c => c.clear()); renderAll(); if (PDATA) renderPat(); };
+const rerender = () => { Object.values(charts).forEach(c => c.clear()); renderAll(); if (PDATA) renderPat(); if (WDATA) renderWb(); };
 try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender); } catch {}
 new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
@@ -2748,10 +3110,19 @@ try {
   if (pl && typeof pl === "object") { $("pq").value = pl.q || ""; $("pap").value = pl.applicant || ""; $("pcls").value = (pl.codes || []).join(", "); $("pclsType").value = pl.clsType === "ipc" ? "ipc" : "cpc"; $("py1").value = pl.y1 || 2005; PSEL = (pl.countries || []).filter(c => ISO.includes(c)); }
   else $("pq").value = "";
 } catch {}
-pubChips.draw(); patChips.draw();
+try {
+  const wl = JSON.parse(store.get("wlast", "null"));
+  if (wl && typeof wl === "object") {
+    if (Array.isArray(wl.countries)) WSEL = wl.countries.filter(c => ISO.includes(c));
+    if (wl.y1) $("wy1").value = wl.y1;
+    if (wl.code) { fillWbIndicators(); if (WB_IND.some(r => r[1] === wl.code)) $("wind").value = wl.code; else { $("wind").value = "_other"; $("wcode").value = wl.code; } }
+  }
+} catch {}
+fillWbIndicators(); $("wy2").value = CUR_YEAR;
+pubChips.draw(); patChips.draw(); wbChips.draw();
 $("qform").addEventListener("submit", e => { e.preventDefault(); run(); });
 setAuto();
-if (location.hash === "#about") setMode("about"); else run();
+if (location.hash === "#about") setMode("about"); else if (location.hash === "#worldbank") setMode("wb"); else run();
 loadSite();
 })();
 </script>

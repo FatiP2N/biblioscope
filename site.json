@@ -3,15 +3,28 @@
     "name": "",
     "contact": ""
   },
+  "colors": {
+    "main": "#1C6E8C",
+    "second": "#B4741C",
+    "background": "#F2F5F6",
+    "panels": "#FFFFFF",
+    "text": "#13222B"
+  },
   "defaultLang": "fr",
   "hideTabs": [],
   "tabs": [
     {
       "id": "ressources",
-      "title": { "fr": "Ressources", "en": "Resources" },
-      "file": { "fr": "pages/ressources.md", "en": "pages/resources.md" }
+      "title": {
+        "fr": "Ressources",
+        "en": "Resources"
+      },
+      "file": {
+        "fr": "pages/ressources.md",
+        "en": "pages/resources.md"
+      }
     },
-        {
+    {
       "id": "economic-data",
       "title": {
         "fr": "Données économiques",
@@ -22,7 +35,6 @@
         "en": "pages/economic-data.md"
       }
     }
- 
   ],
   "aboutExtra": "",
   "texts": {

@@ -14,6 +14,7 @@ After each change, click **Commit changes**: the site updates within 1 to 2 minu
 | Change a text on the site (tab name, label…) | `site.json` → `texts` |
 | Hide a built-in tab | `site.json` → `hideTabs` |
 | Choose the default language | `site.json` → `defaultLang` |
+| Change the site colors | `site.json` → `colors` (see § 7) |
 
 ---
 
@@ -172,12 +173,46 @@ All other keys are in `index.html`, in `const I18N = { fr: { … }, en: { … } 
   "hideTabs": ["patents"]
 ```
 
-Possible names: `"live"` (live search), `"patents"`, `"import"` (import and merge),
+Possible names: `"live"` (live search), `"patents"`, `"worldbank"`, `"import"` (import and merge),
 `"about"`. To show it again, remove it from the list: `"hideTabs": []`.
 
 ---
 
-## 7. Deeper changes
+## 7. Changing the colors
+
+Only the repository owner can change the colors, in `site.json`. Visitors cannot.
+
+1. Open `site.json` in the repository and click the **pencil** icon.
+2. Add (or edit) the `"colors"` block, for example right after the `"about"` block:
+
+```json
+  "colors": {
+    "main": "#1C6E8C",
+    "second": "#B4741C",
+    "background": "#F2F5F6",
+    "panels": "#FFFFFF",
+    "text": "#13222B"
+  },
+```
+
+3. Replace the codes with the colors you want, then **Commit changes**.
+
+| Key | What it colors |
+|---|---|
+| `main` | buttons, links, bars, maps, the "scope" of the logo |
+| `second` | patents, selected countries, highlights |
+| `background` | page background |
+| `panels` | background of the panels |
+| `text` | text |
+
+Colors are written as `"#RRGGBB"` codes: search "color picker" in Google, choose a color and copy its HEX code.
+You can keep only the keys you want to change. Lighter and darker shades are computed automatically,
+and dark mode gets matching colors. To choose dark-mode colors yourself, add a `"darkColors"` block with the same keys.
+To go back to the original colors, delete the `"colors"` block.
+
+---
+
+## 8. Deeper changes
 
 Colors, layout, new charts: the source files are in `biblioscope-source.zip`
 (`src/head.html` for styles and colors, `src/body.html` for the structure, `src/app.js` for the logic,
