@@ -5,7 +5,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Spectral:wght@500;600;700&display=swap">
 <style>
-/* Layout : barre de requête collante (onglets direct / import), bande d'indicateurs, puis grille de panneaux (2 colonnes, 1 sur mobile). */
+/* Layout: sticky query bar (tabs), indicator strip, then a grid of panels (2 columns, 1 on mobile). */
 :root{
   --paper:#F2F5F6; --surface:#FFFFFF; --ink:#13222B; --muted:#5B6C75; --line:#D6DFE3;
   --accent:#1C6E8C; --accent-2:#0E4A61; --accent-soft:#D5E8EF; --ochre:#B4741C; --ochre-soft:#F3E3C8;
@@ -33,7 +33,7 @@ button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-/* En-tête */
+/* Header */
 .top{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
 .top .wrap{padding-block:12px;display:grid;gap:10px}
 .brand{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -62,7 +62,7 @@ form.query{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1.7fr) au
 .go:hover{background:var(--accent-2)}
 .go:disabled{opacity:.6;cursor:progress}
 
-/* Sélecteur de pays (puces) */
+/* Country selector (chips) */
 .chips{display:flex;flex-wrap:wrap;gap:4px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:4px 6px;min-height:40px}
 .chips:focus-within{border-color:var(--accent)}
 .chips input{border:0!important;background:transparent!important;padding:4px!important;flex:1;min-width:8em;width:auto!important}
@@ -102,7 +102,7 @@ form.query.pq{grid-template-columns:minmax(0,1.5fr) minmax(0,1.4fr) minmax(0,1.4
 .setup code{font-family:var(--f-data);font-size:.8rem;background:var(--paper);padding:1px 5px;border-radius:3px}
 .seg button[disabled]{opacity:.45;cursor:not-allowed}
 
-/* Réglages */
+/* Settings */
 .settings{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-top:16px;display:grid;gap:12px}
 .settings h2{font-family:var(--f-display);margin:0;font-size:1.15rem}
 .settings .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -110,7 +110,7 @@ form.query.pq{grid-template-columns:minmax(0,1.5fr) minmax(0,1.4fr) minmax(0,1.4
 .settings p{margin:0;color:var(--muted);font-size:.85rem;max-width:75ch}
 .settings .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
-/* Indicateurs */
+/* Indicators */
 .kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:18px}
 .kpi{background:var(--surface);padding:14px 16px;display:grid;gap:2px;min-width:0;align-content:start}
 .kpi .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
@@ -127,7 +127,7 @@ form.query.pq{grid-template-columns:minmax(0,1.5fr) minmax(0,1.4fr) minmax(0,1.4
 .scope{margin:16px 0 0;font-family:var(--f-display);font-size:1.15rem;font-weight:500;color:var(--muted)}
 .scope b{color:var(--ink);font-weight:600}
 
-/* Panneaux */
+/* Panels */
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-block:16px 40px}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0;display:grid;gap:10px;align-content:start}
 .panel.wide{grid-column:1/-1}
@@ -184,7 +184,7 @@ footer p{max-width:90ch;margin:.3em 0}
 .loading .chart,.loading .scroll{opacity:.45;transition:opacity .2s}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
-/* Langue, fichiers importés, fusion */
+/* Language, imported files, merge */
 .lang{display:flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .lang button{background:none;border:0;padding:5px 9px;font-size:.78rem;font-weight:600;cursor:pointer;color:var(--muted);font-family:var(--f-data)}
 .lang button[aria-pressed="true"]{background:var(--accent);color:var(--surface)}
@@ -197,7 +197,7 @@ footer p{max-width:90ch;margin:.3em 0}
 #mergeStats .v{font-size:1.4rem}
 @media (max-width:640px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
-/* Réseaux, import Lens, page À propos */
+/* Networks, patent sample, About page */
 :root{--c1:#1C6E8C;--c2:#C2702A;--c3:#2E7D55;--c4:#B23A48;--c5:#6A4FA3;--c6:#2A8F8F;--c7:#8C7A1C;--c8:#5B6C75}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c1:#5CB2D2;--c2:#E39A55;--c3:#5FBF8C;--c4:#E07A86;--c5:#A58BE0;--c6:#5CC7C7;--c7:#D2BE5A;--c8:#93A6AF}}
 :root[data-theme="dark"]{--c1:#5CB2D2;--c2:#E39A55;--c3:#5FBF8C;--c4:#E07A86;--c5:#A58BE0;--c6:#5CC7C7;--c7:#D2BE5A;--c8:#93A6AF}
@@ -230,7 +230,7 @@ footer p{max-width:90ch;margin:.3em 0}
 .kpis.k5{grid-template-columns:repeat(5,minmax(0,1fr))}
 @media (max-width:900px){.kpis.k5{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:480px){.kpis.k5{grid-template-columns:repeat(2,minmax(0,1fr))}}
-/* Indicateurs de chargement */
+/* Loading indicators */
 .top{position:sticky}
 .progress{position:absolute;left:0;right:0;bottom:-1px;height:3px;overflow:hidden;background:var(--accent-soft)}
 .progress i{position:absolute;top:0;bottom:0;left:0;width:0;background:var(--accent);transition:width .35s ease}
@@ -243,7 +243,7 @@ footer p{max-width:90ch;margin:.3em 0}
 .panel.busy .chart,.panel.busy .map,.panel.busy .net,.panel.busy .scroll{opacity:.55;transition:opacity .2s}
 @keyframes bs-spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.progress.indet i{animation:none;width:100%;opacity:.5}.panel.busy::after{animation:none}}
-/* Pages personnalisées (dossier pages/) */
+/* Custom pages (pages/ folder) */
 .custom h1{font-family:var(--f-display);font-size:1.9rem;margin:0;text-wrap:balance}
 .custom h2{font-family:var(--f-display);font-size:1.35rem;margin:22px 0 6px;color:var(--accent-2)}
 .custom img,.custom video,.custom iframe,.custom embed,.custom object{max-width:100%}

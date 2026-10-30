@@ -1,8 +1,8 @@
-/* ===== Configuration du site publié / Published site configuration =====
-   Renseignez ici l'URL de votre Worker pour que tous les visiteurs en profitent. */
+/* ===== Published site configuration =====
+   Set your Worker URL here so that every visitor uses it. Most settings can also be changed in site.json. */
 const SITE_CONFIG = {
   workerUrl: "https://biblioscope.fatima-belmehdi.workers.dev", openAlexViaWorker: true, defaultLang: "fr",
-  about: { name: "", contact: "" }   // affichés en bas de la page « À propos » s'ils sont renseignés
+  about: { name: "", contact: "" }   // shown at the bottom of the About page when filled in
 };
 
 (() => {
@@ -11,7 +11,7 @@ const $ = id => document.getElementById(id);
 const CUR_YEAR = new Date().getFullYear();
 $("y2").value = CUR_YEAR; $("py2").value = CUR_YEAR;
 
-/* ---------- stockage local ---------- */
+/* ---------- local storage ---------- */
 const store = {
   get(k, d = "") { try { const v = localStorage.getItem("bs_" + k); return v === null ? d : v; } catch { return d; } },
   set(k, v) { try { localStorage.setItem("bs_" + k, v); } catch {} }
@@ -22,7 +22,7 @@ const cfg = {
   get viaWorker() { return store.get("viaWorker", SITE_CONFIG.openAlexViaWorker ? "1" : "0") === "1"; }
 };
 
-/* ---------- langue ---------- */
+/* ---------- language ---------- */
 let LANG = (() => {
   const s = store.get("lang", "");
   if (s === "fr" || s === "en") return s;
@@ -57,7 +57,7 @@ function applyStatic() {
   if (typeof drawCustomTabs === "function") try { drawCustomTabs(); } catch {}
 }
 
-/* ---------- pays ---------- */
+/* ---------- countries ---------- */
 const ISO = "AF AL DZ AS AD AO AI AG AR AM AW AU AT AZ BS BH BD BB BY BE BZ BJ BM BT BO BA BW BR BN BG BF BI CV KH CM CA KY CF TD CL CN CO KM CG CD CK CR CI HR CU CW CY CZ DK DJ DM DO EC EG SV GQ ER EE SZ ET FK FO FJ FI FR GF PF GA GM GE DE GH GI GR GL GD GP GU GT GN GW GY HT VA HN HK HU IS IN ID IR IQ IE IL IT JM JP JO KZ KE KI KP KR XK KW KG LA LV LB LS LR LY LI LT LU MO MG MW MY MV ML MT MH MQ MR MU YT MX FM MD MC MN ME MS MA MZ MM NA NR NP NL NC NZ NI NE NG NU MK MP NO OM PK PW PS PA PG PY PE PH PL PT PR QA RE RO RU RW KN LC VC WS SM ST SA SN RS SC SL SG SX SK SI SB SO ZA SS ES LK SD SR SE CH SY TW TJ TZ TH TL TG TO TT TN TR TM TV UG UA AE GB US UY UZ VU VE VN YE ZM ZW".split(" ");
 const dn = l => { try { return new Intl.DisplayNames([l], { type: "region" }); } catch { return null; } };
 const DN = { fr: dn("fr"), en: dn("en") };
@@ -111,13 +111,13 @@ function fillDatalists() {
   $("clsList").innerHTML = CLS.map(r => `<option value="${esc(r[0])}" label="${esc(LANG === "fr" ? r[1] : r[2])}"></option>`).join("");
 }
 
-/* ---------- couleurs ---------- */
+/* ---------- colors ---------- */
 const tok = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const T = () => ({ ink: tok("--ink"), muted: tok("--muted"), line: tok("--line"), surface: tok("--surface"), paper: tok("--paper"),
   accent: tok("--accent"), accent2: tok("--accent-2"), soft: tok("--accent-soft"), ochre: tok("--ochre"), ochreSoft: tok("--ochre-soft"),
   good: tok("--good"), mono: "IBM Plex Mono, ui-monospace, monospace", body: "IBM Plex Sans, system-ui, sans-serif" });
 
-/* ---------- état ---------- */
+/* ---------- state ---------- */
 let DATA = null, PAT = null, MODE = "live", VIEW = "world", timer = null, inflight = 0, LAST_ROWS = [], SELECTED = [];
 const charts = {};
 function chart(id) {
@@ -131,7 +131,7 @@ function noChart(id, msg) {
 }
 window.addEventListener("resize", () => Object.values(charts).forEach(c => c.resize()));
 function setStatus(kind, txt) { $("dot").className = "dot " + kind; $("stateTxt").textContent = txt; }
-/* Chargement : barre fine sous l'en-tête (-1 = indéterminée, 0..1 = avancement, null = masquée) et repère par panneau */
+/* Loading: thin bar under the header (-1 = indeterminate, 0..1 = progress, null = hidden) and a marker on each panel */
 function setProgress(v) {
   const p = $("progress"); if (!p) return;
   if (v == null) { p.hidden = true; return; }
@@ -147,7 +147,7 @@ function busy(el, label) {
 }
 function pubBusy(on) { document.querySelectorAll("#pubView .panel").forEach(p => busy(p, on ? t("ld.loading") : null)); }
 
-/* ---------- fond de carte : Maroc + Sahara occidental ---------- */
+/* ---------- base map: Morocco + Sahara merged ---------- */
 function decodeRing(str, off, scale) {
   const out = []; let px = off[0], py = off[1];
   for (let i = 0; i < str.length; i += 2) {
@@ -193,7 +193,7 @@ function mapName() {
   return MAPNAME;
 }
 
-/* ---------- OpenAlex (avec cache mémoire de 10 min) ---------- */
+/* ---------- OpenAlex (with a 10-minute in-memory cache) ---------- */
 const CACHE = new Map();
 async function getJSON(url, force) {
   const hit = CACHE.get(url);
@@ -280,7 +280,7 @@ function describe(spec) {
   return `${what} · ${where}`;
 }
 
-/* ---------- données d'exemple ---------- */
+/* ---------- example data ---------- */
 function seeded(str) {
   let h = 2166136261; for (const ch of str) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
   let seed = h >>> 0; return () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
@@ -335,7 +335,7 @@ function demoData(s) {
 }
 
 /* ======================================================================
-   IMPORT ET FUSION (WoS, Scopus, Publish or Perish)
+   IMPORT AND MERGE (WoS, Scopus, Publish or Perish)
    ====================================================================== */
 function loadScript(src) {
   return new Promise((ok, ko) => { const el = document.createElement("script"); el.src = src; el.onload = ok; el.onerror = () => ko(new Error("Script: " + src)); document.head.appendChild(el); });
@@ -458,7 +458,7 @@ function detectBase(s0, tagged) {
   if (tagged || "ut" in s0 || "ut (unique wos id)" in s0 || "tc" in s0 || "times cited, all databases" in s0) return "WoS";
   return "Autre";
 }
-/* Une notice normalisée */
+/* One normalized record */
 function normalize(r, base) {
   const title = stripTags(undouble(pick(r, COLS.title)));
   const year = parseInt(pick(r, COLS.year), 10);
@@ -477,8 +477,8 @@ function normalize(r, base) {
     bases: [base], citesBy: { [base]: isNaN(cites) ? null : cites }, cites: isNaN(cites) ? 0 : cites
   };
 }
-let FILES = [];   // { name, base, recs (normalisées), raw: nombre lu, internal: doublons internes }
-let MERGE = null; // résultat de la fusion
+let FILES = [];   // { name, base, recs (normalized), raw: records read, internal: internal duplicates }
+let MERGE = null; // merge result
 function dedupeWithin(recs) {
   const seen = new Set(), out = []; let dropped = 0;
   for (const r of recs) {
@@ -528,7 +528,7 @@ function runMerge() {
       if (i != null) { mergeInto(master[i], r, rule); rule === "doi" ? nDoi++ : nTitle++; }
       else { const idx = master.push(r) - 1; index(r, idx); addedHere.push(idx); }
     }
-    /* quasi-doublons : nouvelles notices de ce fichier vs notices des fichiers précédents restées seules */
+    /* near-duplicates: new records of this file vs unmatched records of previous files */
     if (fi > 0) {
       const earlier = master.filter(m => m.fileIdx < fi && m.bases.length === 1).map(m => ({ m, ws: wordSet(m.nt) }));
       for (const idx of addedHere) {
@@ -638,7 +638,7 @@ function renderMerge() {
   const prov = new Map(); mg.records.forEach(r => { const k = r.bases.join(" + "); prov.set(k, (prov.get(k) || 0) + 1); });
   const rows = [...prov.entries()].sort((a, b) => b[0].split(" + ").length - a[0].split(" + ").length || b[1] - a[1]);
   $("tProv").tBodies[0].innerHTML = rows.map(([k, n]) => `<tr><td>${esc(k)}</td><td class="n">${fmt(n)}</td><td class="n">${pct(n / mg.records.length)}</td></tr>`).join("");
-  /* couverture sur les années communes, pour deux bases */
+  /* coverage over the common years, for two databases */
   let cov = "";
   const bases = [...new Set(FILES.map(f => f.base))];
   if (bases.length === 2) {
@@ -658,7 +658,7 @@ function renderMerge() {
   $("reviewBox").hidden = !mg.review.length;
   $("tReview").tBodies[0].innerHTML = mg.review.slice(0, 100).map(x => `<tr><td class="n">${pct(x.j)}</td><td>${esc(x.a.title)}<div class="w-meta">${esc(x.a.bases.join(" + "))}</div></td><td>${esc(x.b.title)}<div class="w-meta">${esc(x.b.bases.join(" + "))}</div></td><td class="n">${x.a.year ?? "—"} / ${x.b.year ?? "—"}</td></tr>`).join("");
 }
-let dlNS; // capacité « downloads » quand la page est vue dans claude.ai ; sinon téléchargement navigateur classique
+let dlNS; // "downloads" capability when viewed inside claude.ai; otherwise a regular browser download
 if (window.claude && typeof window.claude.use === "function") window.claude.use("downloads").then(ns => { dlNS = ns; }).catch(() => { dlNS = null; });
 $("btnDownload").addEventListener("click", async () => {
   if (!MERGE) return;
@@ -676,7 +676,7 @@ $("btnCopyMerged").addEventListener("click", async e => {
   setTimeout(() => b.textContent = old, 1600);
 });
 
-/* ---------- rendu publications ---------- */
+/* ---------- publications rendering ---------- */
 function hIndex(works) {
   const c = works.map(w => w.cites).sort((a, b) => b - a);
   let h = 0; while (h < c.length && c[h] >= h + 1) h++;
@@ -878,7 +878,7 @@ function renderAll() {
   renderNet("pub");
 }
 
-/* ---------- pays sélectionnés (puces) ---------- */
+/* ---------- selected countries (chips) ---------- */
 function makeChips(boxId, inputId, getList, setList, opts) {
   const nameOf = (opts && opts.name) || cname, resolve = (opts && opts.resolve) || resolveCountryInput;
   const phEmpty = (opts && opts.ph) || "ph.country";
@@ -912,7 +912,7 @@ function focusCountry(cc) {
   SELECTED = [cc]; VIEW = "world"; pubChips.draw(); run();
 }
 
-/* ---------- recherche en direct ---------- */
+/* ---------- live search ---------- */
 function state() {
   let y1 = parseInt($("y1").value, 10) || 2005, y2 = parseInt($("y2").value, 10) || CUR_YEAR;
   y2 = Math.min(Math.max(y2, 1900), CUR_YEAR); y1 = Math.min(Math.max(y1, 1900), y2);
@@ -962,7 +962,7 @@ async function checkBudget() {
 }
 
 /* ======================================================================
-   ONGLET BREVETS
+   PATENTS TAB
    ====================================================================== */
 const normCode = s => String(s || "").toUpperCase().replace(/\s+/g, "");
 const CLSMAP = new Map(CLS.map(r => [normCode(r[0]), r]));
@@ -974,7 +974,7 @@ function clsLabel(sym) {
 const rollup = (sym, level) => { const s = normCode(sym); if (level === "subclass") return s.slice(0, 4); if (level === "group") return s.split("/")[0]; return s; };
 const officeName = c => (I18N[LANG]["off." + c] || I18N.fr["off." + c]) ? t("off." + c) : cname(c);
 let PSEL = [], PDATA = null, PVIEW = "applicant", PLEVEL = "subclass", pinflight = 0, LAST_PROWS = [], pMapBound = false, pCodesBound = false;
-/* Juridictions : pays + offices régionaux et internationaux */
+/* Jurisdictions: countries + regional and international offices */
 const REGIONAL = ["EP", "WO", "EA", "AP", "OA", "GC"];
 function resolveOffice(v) {
   const s = String(v || "").trim(); if (!s) return null;
@@ -1010,17 +1010,17 @@ async function patCall(url) {
   if (!r.ok) throw new Error(j.error || t("err.http", { src: "Proxy", code: r.status }));
   return j;
 }
-/* L'OEB accepte environ 30 recherches par minute : le site en demande au plus 25 nouvelles par minute,
-   par lots, et le proxy garde chaque comptage en cache. Les données s'affichent au fur et à mesure. */
+/* The EPO accepts about 30 searches per minute: the site asks for at most 25 new ones per minute,
+   in batches, and the proxy caches every count. Data is displayed as it arrives. */
 let OPS_RATE = 25;
 let opsWin = { t0: 0, used: 0 };
 function opsBudget() { const n = Date.now(); if (n - opsWin.t0 > 60000) opsWin = { t0: n, used: 0 }; return Math.max(0, OPS_RATE - opsWin.used); }
-/* L'OEB annonce son état dans chaque réponse, ex. « busy (… search=green:15) » : le site suit ce rythme. */
+/* The EPO reports its state in every response, e.g. "busy (… search=green:15)": the site follows that pace. */
 function opsAdapt(throttle) {
   const m = /search=(\w+):(\d+)/.exec(throttle || ""); if (!m) return;
   const color = m[1], n = parseInt(m[2], 10);
   const factor = color === "green" ? 1 : color === "yellow" ? 0.6 : color === "red" ? 0.3 : 0;
-  OPS_RATE = Math.max(3, Math.min(25, Math.floor(n * factor) - 1));   // « black » : pause d'une minute ci-dessous, puis reprise lente
+  OPS_RATE = Math.max(3, Math.min(25, Math.floor(n * factor) - 1));   // "black": one-minute pause below, then a slow restart
   if (color === "black") opsWin = { t0: Date.now(), used: 999 };
 }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -1047,7 +1047,7 @@ async function fetchPat(ps, isCurrent, onPartial) {
     }
     const job = queue[0];
     const j = await patCall(patURL(ps, { part: job.part, max: Math.min(10, budget), ...(job.offices ? { offices: job.offices.join(",") } : {}) }));
-    if (j.source !== "epo") return j;                // Lens : réponse complète en un appel
+    if (j.source !== "epo") return j;                // Lens: complete answer in one call
     info = j; rounds++;
     opsWin.used += j.fetched || 0;
     opsAdapt(j.throttle);
@@ -1097,7 +1097,7 @@ function patDemo(ps) {
     date: `${ps.y1 + Math.floor(rnd() * (ps.y2 - ps.y1 + 1))}-0${1 + Math.floor(rnd() * 9)}-15`, applicants: [t("ex.applicant", { x: L(i % 12) })], cites: Math.round(600 / Math.pow(i + 1, 0.7)), url: null }));
   return { source: "demo", unit: t("unit.demo"), total, byYear, byOffice, byApplicantCountry, topApplicants, topCodes, legal, top, warnings: [] };
 }
-/* Dernières réponses du serveur brevets, gardées dans ce navigateur pour le cas où il ne répond plus */
+/* Last patent server responses, kept in this browser in case it stops responding */
 const PCACHE_KEY = "patcache";
 const pKey = ps => JSON.stringify([ps.q.toLowerCase(), (ps.applicant || "").toLowerCase(), ps.codes, ps.clsType, ps.countries || [], ps.y1, ps.y2]);
 function pCacheRead() { try { return JSON.parse(store.get(PCACHE_KEY, "null")) || { entries: {}, last: null }; } catch { return { entries: {}, last: null }; } }
@@ -1143,7 +1143,7 @@ async function runPat() {
         const psNow = ps;
         d = await fetchPat(ps, () => my === pinflight && MODE === "pat", (part, wait) => {
           PDATA = { ...part, ps: psNow, kind: "api", loading: !part.complete, offline: null };
-          $("pgo").disabled = false; $("pgrid").classList.remove("loading");   // une nouvelle recherche reste possible pendant le chargement
+          $("pgo").disabled = false; $("pgrid").classList.remove("loading");   // a new search stays possible while loading
           const views = availableViews(PDATA); if (!views.includes(PVIEW)) PVIEW = views[0] || "office";
           renderPat();
           setStatus("", t("pload.progress", { a: fmt(part.done), b: fmt(part.expected) }) + (wait ? t("pload.wait", { s: wait }) : "") + t("pload.cachedNote"));
@@ -1339,7 +1339,7 @@ $("pform").addEventListener("submit", e => { e.preventDefault(); runPat(); });
 $("pclsType").addEventListener("change", () => runPat());
 
 /* ======================================================================
-   RÉSEAUX DE CO-OCCURRENCE (principes de VOSviewer)
+   CO-OCCURRENCE NETWORKS (VOSviewer principles)
    ====================================================================== */
 const NET = { pub: { color: "cluster", type: null, edges: [], nodes: [] }, pat: { color: "cluster", type: null, edges: [], nodes: [] } };
 function louvain(n, edges) {
@@ -1389,7 +1389,7 @@ function buildNetwork(docs, field, maxNodes, maxNames) {
     }
   }
   let edges = [...ew.entries()].map(([key, w]) => ({ s: Math.floor(key / 10000), t: key % 10000, w })).sort((a, b) => b.w - a.w);
-  /* chaque nœud garde ses liens les plus forts (comme la sélection des liens dans VOSviewer) */
+  /* each node keeps its strongest links (like link selection in VOSviewer) */
   const kept = [], perNode = new Array(top.length).fill(0), K = 6, CAP = Math.max(80, top.length * 8);
   for (const e of edges) { if (kept.length >= CAP) break; if (perNode[e.s] < K || perNode[e.t] < K) { kept.push(e); perNode[e.s]++; perNode[e.t]++; } }
   edges = kept;
@@ -1499,7 +1499,7 @@ function renderNet(p) {
 });
 
 /* ======================================================================
-   BREVETS DEPUIS UN EXPORT LENS (échantillon intégré ou fichier importé)
+   PATENT RECORDS: EMBEDDED ESPACENET SAMPLE
    ====================================================================== */
 let SAMPLE = { meta: null, records: [] };
 try { SAMPLE = JSON.parse($("patSample").textContent); } catch { SAMPLE = { meta: null, records: [] }; }
@@ -1517,7 +1517,7 @@ function filterPatents(recs, ps) {
 }
 const cntBy = (f, fn) => { const m = new Map(); for (const r of f) for (const x of new Set(fn(r) || [])) if (x) m.set(x, (m.get(x) || 0) + 1); return [...m.entries()].sort((a, b) => b[1] - a[1]); };
 const patLink = r => r.id ? "https://lens.org/" + r.id : (r.k ? "https://worldwide.espacenet.com/patent/search?q=pn%3D" + encodeURIComponent(r.k) : null);
-/* Indicateurs calculés sur des notices (échantillon Espacenet ou notices OEB) */
+/* Indicators computed on records (Espacenet sample or EPO records) */
 function sampleStats(f, ps) {
   const has = fn => f.some(r => { const v = fn(r); return Array.isArray(v) ? v.length : v; });
   let topBy, sorted;
@@ -1550,7 +1550,7 @@ function analyzePatents(recs, ps) {
 $("pSample").addEventListener("click", () => { PSRC = "sample"; runPat(); });
 $("pLive").addEventListener("click", () => { PSRC = "api"; runPat(); });
 
-/* ---------- onglets ---------- */
+/* ---------- tabs ---------- */
 function setMode(m) {
   MODE = m;
   $("tabLive").setAttribute("aria-selected", String(m === "live"));
@@ -1606,10 +1606,10 @@ function renderAbout() {
 }
 
 /* ======================================================================
-   PERSONNALISATION SANS TOUCHER AU CODE : site.json + dossier pages/
+   NO-CODE CUSTOMIZATION: site.json + pages/ folder
    ====================================================================== */
 let SITE = null;
-const CUSTOM = [];   // onglets ajoutés : { id, title: {fr, en}, file }
+const CUSTOM = [];   // added tabs: { id, title: {fr, en}, file }
 const MARKED_URL = "https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js";
 const pickLang = v => v == null ? "" : typeof v === "string" ? v : (v[LANG] || v.fr || v.en || "");
 const BUILTIN_TABS = { live: "tabLive", patents: "tabPat", import: "tabFile", about: "tabAbout" };
@@ -1625,7 +1625,7 @@ async function renderFileInto(el, file, stillWanted) {
     }
     if (stillWanted && !stillWanted()) return;
     el.innerHTML = html;
-    // les codes embed qui contiennent un <script> (Twitter, Flourish…) doivent être réactivés
+    // embed codes containing a <script> (Twitter, Flourish…) must be re-activated
     el.querySelectorAll("script").forEach(old => {
       const sc = document.createElement("script");
       [...old.attributes].forEach(a => sc.setAttribute(a.name, a.value));
@@ -1645,7 +1645,7 @@ function drawCustomTabs() {
 }
 async function loadSite() {
   let r;
-  try { r = await fetch("site.json", { cache: "no-store" }); } catch { return; }   // aperçu ou fichier ouvert en local : rien à faire
+  try { r = await fetch("site.json", { cache: "no-store" }); } catch { return; }   // preview or local file: nothing to load
   if (!r.ok) return;
   let j;
   try { j = JSON.parse(await r.text()); }
@@ -1685,7 +1685,7 @@ const drop = $("drop");
 ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
 drop.addEventListener("drop", e => addFiles([...e.dataTransfer.files]));
 
-/* ---------- copie CSV ---------- */
+/* ---------- CSV copy ---------- */
 function csv(rows) { return rows.map(r => r.map(v => { const s = String(v ?? ""); return /[",;\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(",")).join("\n"); }
 document.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click", async () => {
   const k = b.dataset.copy;
@@ -1700,7 +1700,7 @@ document.querySelectorAll("[data-copy]").forEach(b => b.addEventListener("click"
   setTimeout(() => b.textContent = old, 1600);
 }));
 
-/* ---------- réglages ---------- */
+/* ---------- settings ---------- */
 $("oaKey").value = cfg.key; $("workerUrl").value = store.get("worker") || SITE_CONFIG.workerUrl; $("viaWorker").checked = cfg.viaWorker;
 $("btnSettings").addEventListener("click", () => { const el = $("settings"); el.hidden = !el.hidden; $("btnSettings").setAttribute("aria-expanded", String(!el.hidden)); });
 $("saveSettings").addEventListener("click", () => {
@@ -1718,7 +1718,7 @@ $("testWorker").addEventListener("click", async () => {
   } catch { $("settingsMsg").textContent = t("set.ko"); }
 });
 
-/* ---------- actualisation automatique ---------- */
+/* ---------- auto refresh ---------- */
 $("auto").value = store.get("auto", "0");
 function setAuto() {
   clearInterval(timer); const m = Number($("auto").value); store.set("auto", String(m));
@@ -1726,7 +1726,7 @@ function setAuto() {
 }
 $("auto").addEventListener("change", setAuto);
 
-/* ---------- langue ---------- */
+/* ---------- language ---------- */
 function setLang(l) {
   if (l === LANG) return;
   LANG = l; store.set("lang", l); nf = new Intl.NumberFormat(LOC());
@@ -1741,12 +1741,12 @@ function setLang(l) {
 }
 document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
 
-/* ---------- thème ---------- */
+/* ---------- theme ---------- */
 const rerender = () => { Object.values(charts).forEach(c => c.clear()); renderAll(); if (PDATA) renderPat(); };
 try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rerender); } catch {}
 new MutationObserver(rerender).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-/* ---------- démarrage ---------- */
+/* ---------- startup ---------- */
 applyStatic(); fillDatalists();
 let restored = false;
 try {
