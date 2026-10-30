@@ -1,39 +1,39 @@
-# Modifier Biblioscope vous-même
+# Editing Biblioscope yourself
 
-Tout se fait sur GitHub, dans votre navigateur, sans installer quoi que ce soit.
-Après chaque modification, cliquez **Commit changes** : le site se met à jour en 1 à 2 minutes
-(rechargez la page avec Ctrl + F5 si l'ancienne version reste affichée).
+Everything is done on GitHub, in your browser, with nothing to install.
+After each change, click **Commit changes**: the site updates within 1 to 2 minutes
+(reload the page with Ctrl + F5 if the old version is still displayed).
 
-| Je veux… | Fichier à modifier |
+| I want to… | File to edit |
 |---|---|
-| Ajouter, renommer ou retirer un onglet | `site.json` + une page dans `pages/` |
-| Écrire ou modifier le contenu d'un onglet ajouté | `pages/nom-de-la-page.md` |
-| Intégrer une vidéo, un formulaire, une carte, un graphique (code embed) | la page `.md` de l'onglet |
-| Mettre mon nom et un contact dans « À propos » | `site.json` → `about` |
-| Ajouter du contenu (ou un embed) en bas de « À propos » | `site.json` → `aboutExtra` |
-| Changer un texte du site (titre d'onglet, libellé…) | `site.json` → `texts` |
-| Masquer un onglet existant | `site.json` → `hideTabs` |
-| Choisir la langue par défaut | `site.json` → `defaultLang` |
+| Add, rename or remove a tab | `site.json` + a page in `pages/` |
+| Write or edit the content of an added tab | `pages/page-name.md` |
+| Embed a video, form, map or chart (embed code) | the tab's `.md` page |
+| Put my name and a contact on the About page | `site.json` → `about` |
+| Add content (or an embed) at the bottom of the About page | `site.json` → `aboutExtra` |
+| Change a text on the site (tab name, label…) | `site.json` → `texts` |
+| Hide a built-in tab | `site.json` → `hideTabs` |
+| Choose the default language | `site.json` → `defaultLang` |
 
 ---
 
-## 1. Le fichier `site.json`
+## 1. The `site.json` file
 
-C'est le panneau de réglage du site. Pour le modifier : cliquez `site.json` dans le dépôt, puis l'icône **crayon**.
+This is the site's settings panel. To edit it: click `site.json` in the repository, then the **pencil** icon.
 
 ```json
 {
   "about": {
-    "name": "Fatima Bel-Mehdi",
-    "contact": "adresse@exemple.org"
+    "name": "Your Name",
+    "contact": "address@example.org"
   },
   "defaultLang": "fr",
   "hideTabs": [],
   "tabs": [
     {
-      "id": "ressources",
+      "id": "resources",
       "title": { "fr": "Ressources", "en": "Resources" },
-      "file": { "fr": "pages/ressources.md", "en": "pages/resources.md" }
+      "file": { "fr": "pages/resources-fr.md", "en": "pages/resources.md" }
     }
   ],
   "aboutExtra": "",
@@ -44,144 +44,144 @@ C'est le panneau de réglage du site. Pour le modifier : cliquez `site.json` dan
 }
 ```
 
-**Trois règles pour ne rien casser** (le format s'appelle JSON) :
-1. Tout texte est entre guillemets droits `"…"`.
-2. Des virgules **entre** les éléments, mais **jamais après le dernier** d'une liste ou d'un bloc.
-3. Chaque `{` a son `}` et chaque `[` a son `]`.
+**Three rules to avoid breaking anything** (the format is called JSON):
+1. Every text goes between straight double quotes `"…"`.
+2. Commas go **between** items, but **never after the last one** in a list or block.
+3. Every `{` has its `}` and every `[` has its `]`.
 
-En cas d'erreur, le site reste en ligne et affiche un bandeau rouge qui indique le problème.
-Pour vérifier avant d'enregistrer : copiez le contenu sur **jsonlint.com**.
+If there is a mistake, the site stays online and shows a red banner describing the problem.
+To check before saving, paste the content into **jsonlint.com**.
 
 ---
 
-## 2. Ajouter un onglet (3 étapes)
+## 2. Adding a tab (3 steps)
 
-**Étape 1. Créer la page.** Dans le dépôt : **Add file → Create new file**. Dans le nom du fichier, tapez
-`pages/tutoriels.md` (le `/` crée le dossier tout seul). Écrivez le contenu (voir § 3), puis **Commit changes**.
+**Step 1. Create the page.** In the repository: **Add file → Create new file**. In the file name, type
+`pages/tutorials.md` (the `/` creates the folder automatically). Write the content (see § 3), then **Commit changes**.
 
-**Étape 2. Déclarer l'onglet** dans `site.json`, dans la liste `"tabs"` :
+**Step 2. Declare the tab** in `site.json`, in the `"tabs"` list:
 
 ```json
   "tabs": [
     {
-      "id": "ressources",
+      "id": "resources",
       "title": { "fr": "Ressources", "en": "Resources" },
-      "file": { "fr": "pages/ressources.md", "en": "pages/resources.md" }
+      "file": { "fr": "pages/resources-fr.md", "en": "pages/resources.md" }
     },
     {
-      "id": "tutoriels",
+      "id": "tutorials",
       "title": { "fr": "Tutoriels", "en": "Tutorials" },
-      "file": "pages/tutoriels.md"
+      "file": "pages/tutorials.md"
     }
   ],
 ```
 
-- `id` : un nom court, sans espace ni accent. Il donne aussi le lien direct : `https://fatip2n.github.io/biblioscope/#tutoriels`.
-- `title` : le nom affiché dans la barre d'onglets, en français et en anglais.
-- `file` : la page à afficher. Une seule page pour les deux langues (`"pages/tutoriels.md"`), ou une par langue
+- `id`: a short name, with no spaces or accents. It also gives the direct link: `https://fatip2n.github.io/biblioscope/#tutorials`.
+- `title`: the name shown in the tab bar, in French and in English.
+- `file`: the page to display. Either one page for both languages (`"pages/tutorials.md"`), or one per language
   (`{ "fr": "…", "en": "…" }`).
-- Par défaut l'onglet se place avant « À propos ». Ajoutez `"after": "about"` pour le mettre après.
+- By default the tab is placed before "About". Add `"after": "about"` to put it after.
 
-**Étape 3.** **Commit changes**. L'onglet apparaît.
+**Step 3.** **Commit changes**. The tab appears.
 
-Pour **retirer** un onglet ajouté, supprimez son bloc `{ … }` de la liste (et la virgule qui le précède).
+To **remove** an added tab, delete its `{ … }` block from the list (and the comma before it).
 
 ---
 
-## 3. Écrire une page (Markdown)
+## 3. Writing a page (Markdown)
 
 ```markdown
-# Titre de la page
+# Page title
 
-Un paragraphe. Du texte en **gras**, en *italique*, et un [lien](https://exemple.org).
+A paragraph. Some **bold** text, some *italic* text, and a [link](https://example.org).
 
-## Sous-titre
+## Subtitle
 
-- un élément de liste
-- un autre élément
+- a list item
+- another item
 
-1. première étape
-2. deuxième étape
+1. first step
+2. second step
 
-> Une citation ou une remarque mise en avant.
+> A quote or a highlighted note.
 
-![Texte décrivant l'image](https://adresse-de-l-image.png)
+![Text describing the image](https://address-of-the-image.png)
 ```
 
-Laissez une **ligne vide** entre deux paragraphes, avant une liste et avant un titre.
-Vous pouvez aussi écrire une page en HTML : nommez-la `.html` au lieu de `.md`.
+Leave a **blank line** between two paragraphs, before a list and before a heading.
+You can also write a page in HTML: name it `.html` instead of `.md`.
 
-**Images** : déposez-les dans le dépôt (par exemple `images/photo.jpg` avec **Add file → Upload files**),
-puis écrivez `![Description](images/photo.jpg)`.
+**Images**: upload them to the repository (for example `images/photo.jpg` with **Add file → Upload files**),
+then write `![Description](images/photo.jpg)`.
 
 ---
 
-## 4. Intégrer un contenu externe (code embed)
+## 4. Embedding external content (embed code)
 
-Sur YouTube, Google Forms, Google Maps, Flourish, Datawrapper, Canva, Padlet… cherchez **Partager →
-Intégrer** (ou *Embed*), copiez le code, puis collez-le tel quel dans la page `.md`, **entre deux lignes vides**.
+On YouTube, Google Forms, Google Maps, Flourish, Datawrapper, Canva, Padlet… look for **Share →
+Embed**, copy the code, then paste it as is into the `.md` page, **between two blank lines**.
 
 ```markdown
-## Présentation vidéo
+## Video presentation
 
 <div class="embed">
-<iframe src="https://www.youtube.com/embed/IDENTIFIANT" title="Présentation" allowfullscreen></iframe>
+<iframe src="https://www.youtube.com/embed/VIDEO_ID" title="Presentation" allowfullscreen></iframe>
 </div>
 
-## Donnez votre avis
+## Give us your feedback
 
 <iframe src="https://docs.google.com/forms/d/e/…/viewform?embedded=true" width="100%" height="800"></iframe>
 ```
 
-- `<div class="embed">` … `</div>` autour d'une vidéo : elle s'adapte à la largeur de l'écran (format 16/9).
-- Pour un formulaire ou un document long, gardez plutôt une hauteur fixe (`height="800"`).
-- Les codes qui contiennent un `<script>` (Twitter/X, Flourish…) fonctionnent aussi.
+- `<div class="embed">` … `</div>` around a video makes it fit the screen width (16:9 format).
+- For a form or a long document, keep a fixed height instead (`height="800"`).
+- Codes that contain a `<script>` (Twitter/X, Flourish…) also work.
 
 ---
 
-## 5. Changer un texte du site sans toucher au code
+## 5. Changing a site text without touching the code
 
-Dans `site.json`, bloc `"texts"`, indiquez la **clé** du texte et sa nouvelle valeur :
+In `site.json`, in the `"texts"` block, give the text's **key** and its new value:
 
 ```json
   "texts": {
     "fr": { "tab.live": "Publications", "about.lead": "Ma présentation de la plateforme…" },
-    "en": { "tab.live": "Publications" }
+    "en": { "tab.live": "Publications", "about.lead": "My introduction to the platform…" }
   }
 ```
 
-Clés les plus utiles :
+Most useful keys:
 
-| Clé | Texte |
+| Key | Text |
 |---|---|
-| `tab.live`, `tab.pat`, `tab.file`, `tab.about` | noms des onglets intégrés |
-| `about.title`, `about.lead` | titre et introduction de « À propos » |
-| `about.body` | tout le guide de « À propos » (HTML) |
-| `foot.data`, `foot.method` | pied de page |
-| `btn.analyze` | bouton « Analyser » |
-| `k.pubs`, `k.h`, `k.cit`, `k.oa` | titres des indicateurs |
+| `tab.live`, `tab.pat`, `tab.file`, `tab.about` | names of the built-in tabs |
+| `about.title`, `about.lead` | title and introduction of the About page |
+| `about.body` | the whole About page guide (HTML) |
+| `foot.data`, `foot.method` | footer |
+| `btn.analyze` | "Analyze" button |
+| `k.pubs`, `k.h`, `k.cit`, `k.oa` | indicator titles |
 
-Toutes les autres clés se trouvent dans `index.html`, dans `const I18N = { fr: { … }, en: { … } }`
-(Ctrl + F sur le texte actuel pour trouver sa clé).
+All other keys are in `index.html`, in `const I18N = { fr: { … }, en: { … } }`
+(use Ctrl + F on the current text to find its key).
 
 ---
 
-## 6. Masquer un onglet intégré
+## 6. Hiding a built-in tab
 
 ```json
   "hideTabs": ["patents"]
 ```
 
-Noms possibles : `"live"` (recherche en direct), `"patents"` (brevets), `"import"` (importer et fusionner),
-`"about"` (à propos). Pour le réafficher, retirez-le de la liste : `"hideTabs": []`.
+Possible names: `"live"` (live search), `"patents"`, `"import"` (import and merge),
+`"about"`. To show it again, remove it from the list: `"hideTabs": []`.
 
 ---
 
-## 7. Modifications plus profondes
+## 7. Deeper changes
 
-Couleurs, mise en page, nouveaux graphiques : les fichiers sources sont dans `biblioscope-source.zip`
-(`src/head.html` pour les styles et couleurs, `src/body.html` pour la structure, `src/app.js` pour le fonctionnement,
-`src/i18n.js` pour les textes). Après modification, `python3 build.py` régénère `index.html`.
-Les couleurs principales sont en tête de `src/head.html` : `--accent` (bleu) et `--ochre` (ocre).
+Colors, layout, new charts: the source files are in `biblioscope-source.zip`
+(`src/head.html` for styles and colors, `src/body.html` for the structure, `src/app.js` for the logic,
+`src/i18n.js` for the texts). After editing, `python3 build.py` regenerates `index.html`.
+The main colors are at the top of `src/head.html`: `--accent` (blue) and `--ochre` (ochre).
 
-Le proxy Cloudflare (`worker.js`) n'est à changer que si une nouvelle version vous est fournie.
+The Cloudflare proxy (`worker.js`) only needs changing when a new version is provided to you.
