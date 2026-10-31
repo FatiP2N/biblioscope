@@ -1,4 +1,6 @@
 {
+  "siteName": "Intelligentrix",
+  "siteNameAccent": "trix",
   "about": {
     "name": "",
     "contact": ""
@@ -39,7 +41,11 @@
   ],
   "aboutExtra": "",
   "texts": {
-    "fr": { "tab.wb": "Données économiques" },
-    "en": { "tab.wb": "Economic Data" }
+    "fr": {
+      "tab.wb": "Données économiques"
+    },
+    "en": {
+      "tab.wb": "Economic Data"
+    }
   }
 }

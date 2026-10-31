@@ -1,4 +1,4 @@
-# Editing Biblioscope yourself
+# Editing Intelligentrix yourself
 
 Everything is done on GitHub, in your browser, with nothing to install.
 After each change, click **Commit changes**: the site updates within 1 to 2 minutes
@@ -14,6 +14,7 @@ After each change, click **Commit changes**: the site updates within 1 to 2 minu
 | Change a text on the site (tab name, label…) | `site.json` → `texts` |
 | Hide a built-in tab | `site.json` → `hideTabs` |
 | Choose the default language | `site.json` → `defaultLang` |
+| Change the site name or its subtitle | `site.json` → `siteName`, `siteNameAccent`, `texts` → `site.tagline` |
 | Change the site colors | `site.json` → `colors` (see § 7) |
 
 ---
@@ -140,6 +141,27 @@ Embed**, copy the code, then paste it as is into the `.md` page, **between two b
 
 ---
 
+### World Bank charts drawn by the site
+
+For World Bank indicators, use this line instead of an iframe (the World Bank blocks pages that load many of its
+widgets at once, with the error "429 too many requests"). The site draws the chart itself, in its own colors:
+
+```markdown
+<div class="wb-chart" data-indicator="GB.XPD.RSDV.GD.ZS"></div>
+```
+
+- `data-indicator`: the indicator code, shown in the address of its page on data.worldbank.org
+  (e.g. `data.worldbank.org/indicator/SP.POP.SCIE.RD.P6` → `SP.POP.SCIE.RD.P6`).
+- `data-countries` (optional): 2-letter country codes, default `"MA,CA,FR,US"`.
+- `data-from` (optional): first year, default `"2000"`.
+- `data-per="million"` (optional): divides by the population, to get a value per million people.
+- `data-world="no"` (optional): hides the world line, to compare the countries more closely.
+  On any chart, visitors can also click "World" (or a country) in the legend to hide or show it.
+
+Example: `<div class="wb-chart" data-indicator="IP.PAT.RESD" data-countries="MA,TN,DZ,EG" data-from="2010" data-per="million"></div>`
+
+---
+
 ## 5. Changing a site text without touching the code
 
 In `site.json`, in the `"texts"` block, give the text's **key** and its new value:
@@ -189,6 +211,7 @@ Only the repository owner can change the colors, in `site.json`. Visitors cannot
   "colors": {
     "main": "#1C6E8C",
     "second": "#B4741C",
+    "third": "#2F7D5B",
     "background": "#F2F5F6",
     "panels": "#FFFFFF",
     "text": "#13222B"
@@ -201,6 +224,7 @@ Only the repository owner can change the colors, in `site.json`. Visitors cannot
 |---|---|
 | `main` | buttons, links, bars, maps, the "scope" of the logo |
 | `second` | patents, selected countries, highlights |
+| `third` | World Bank data (map, ranking, figures and the first line of the charts) |
 | `background` | page background |
 | `panels` | background of the panels |
 | `text` | text |
@@ -209,6 +233,21 @@ Colors are written as `"#RRGGBB"` codes: search "color picker" in Google, choose
 You can keep only the keys you want to change. Lighter and darker shades are computed automatically,
 and dark mode gets matching colors. To choose dark-mode colors yourself, add a `"darkColors"` block with the same keys.
 To go back to the original colors, delete the `"colors"` block.
+
+---
+
+## 8. Changing the site name
+
+The name and its subtitle appear at the top of the page and in the browser tab. In `site.json`:
+
+```json
+  "siteName": "Intelligentrix",
+  "siteNameAccent": "trix",
+```
+
+- `siteName`: the name.
+- `siteNameAccent`: the end of the name shown in the main color (`""` for none).
+- The subtitle is a text key: `"texts": { "fr": { "site.tagline": "…" }, "en": { "site.tagline": "…" } }`.
 
 ---
 
